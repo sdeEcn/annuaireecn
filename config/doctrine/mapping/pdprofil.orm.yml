@@ -21,3 +21,8 @@ App\Entity\pdprofil:
 
         alt:
             type: text
+            nullable: true
+
+
+    lifecycleCallbacks:
+        prePersist: [ setCreatedAt ]

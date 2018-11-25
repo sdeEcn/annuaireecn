@@ -88,7 +88,7 @@ class pdprofil
     /**
      * @param mixed $createdAt
      */
-    public function setCreatedAt($createdAt): void
+    public function setCreatedAt(): void
     {
         $this->createdAt = new DateTime();
     }

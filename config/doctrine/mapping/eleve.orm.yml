@@ -25,7 +25,7 @@ App\Entity\eleve:
             type: integer
 
 
-    ManyToone:
+    manyToOne:
         option2:
             targetEntity: App\Entity\Option
             inversedBy: eleve2
