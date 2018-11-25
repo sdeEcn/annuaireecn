@@ -1,0 +1,26 @@
+App\Entity\Option:
+
+    type: entity
+
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+
+    fields:
+        nom:
+            type: string
+            length: 125
+
+
+    oneToMany:
+        eleve2:
+            targetEntity: App\Entity\eleve
+            mappedBy: option2
+            nullable: true
+
+        eleve3:
+            targetEntity: App\Entity\eleve
+            mappedBy: option3
+            nullable: true
