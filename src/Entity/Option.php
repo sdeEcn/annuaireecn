@@ -7,25 +7,28 @@
  */
 
 namespace App\Entity;
+use Doctrine\ORM\Mapping as ORM;
 
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-
+/**
+ * @ORM\Entity()
+ */
 class Option
 {
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer")
+     */
     private $id;
-    private $nom;
-    private $eleve2;
-    private $eleve3;
-
-    public  function __construct(){
-        $this->eleve2= new ArrayCollection();
-        $this->eleve3= new ArrayCollection();
-    }
 
     /**
-     * @return mixed
+     * @ORM\Column(type="string")
+     */
+    private $nom;
+
+    /**
+     * @return int
      */
     public function getId()
     {
@@ -33,7 +36,7 @@ class Option
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getNom()
     {
@@ -41,22 +44,13 @@ class Option
     }
 
     /**
-     * @param mixed $nom
+     * @param string $nom
      */
     public function setNom($nom): void
     {
         $this->nom = $nom;
     }
 
-    public function getEleves2(): Collection
-    {
-        return $this->eleve2;
-    }
-
-    public function getEleves3(): Collection
-    {
-        return $this->eleve3;
-    }
 
 
 }

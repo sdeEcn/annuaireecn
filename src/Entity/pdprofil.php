@@ -1,26 +1,46 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Alban
- * Date: 24/11/2018
- * Time: 21:20
- */
+
 
 namespace App\Entity;
 
 
+use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints\DateTime;
 
+/**
+ * @ORM\Entity()
+ */
 class pdprofil
 {
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer")
+     */
     private $id;
+
+    /**
+     * @ORM\Column(type="string")
+     */
     private $nom;
+
+    /**
+     * @ORM\Column(type="string")
+     */
     private $lien;
+
+    /**
+     * @ORM\Column(type="string")
+     */
     private $alt;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
     private $createdAt;
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getId()
     {
@@ -30,7 +50,7 @@ class pdprofil
 
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getNom()
     {
@@ -38,7 +58,7 @@ class pdprofil
     }
 
     /**
-     * @param mixed $nom
+     * @param string $nom
      */
     public function setNom($nom): void
     {
@@ -46,7 +66,7 @@ class pdprofil
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getLien()
     {
@@ -54,7 +74,7 @@ class pdprofil
     }
 
     /**
-     * @param mixed $lien
+     * @param string $lien
      */
     public function setLien($lien): void
     {
@@ -62,7 +82,7 @@ class pdprofil
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getAlt()
     {
@@ -70,7 +90,7 @@ class pdprofil
     }
 
     /**
-     * @param mixed $alt
+     * @param string $alt
      */
     public function setAlt($alt): void
     {
@@ -78,16 +98,13 @@ class pdprofil
     }
 
     /**
-     * @return mixed
+     * @return DateTime
      */
     public function getCreatedAt()
     {
         return $this->createdAt;
     }
 
-    /**
-     * @param mixed $createdAt
-     */
     public function setCreatedAt(): void
     {
         $this->createdAt = new DateTime();
