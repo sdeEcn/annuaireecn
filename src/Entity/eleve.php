@@ -45,13 +45,13 @@ class eleve
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Option")
-     * @ORM\JoinColumn(name="option2",referencedColumnName="id")
+     * @ORM\JoinColumn(name="option2",referencedColumnName="id",nullable=true)
      */
     private $option2;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Option")
-     * @ORM\JoinColumn(name="option3",referencedColumnName="id")
+     * @ORM\JoinColumn(name="option3",referencedColumnName="id",nullable=true)
      */
     private $option3;
 
