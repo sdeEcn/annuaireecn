@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid container-no-padding">
+        {{ include('menu.html.twig') }}
+    </div>
+    <div class="container-fluid mt-2">
+        {{ include('header.html.twig') }}
+        <div class="row">
+            <div class="col-md-8 col-sm-12 mb-2">
+                <h2>{% block pageHeader %}{% endblock %}</h2>
+                <strong>{% block pageDescription %}{% endblock %}</strong>
+            </div>
+            <div class="col-md-4 col-sm-12">
+                {% block pageButton %}{% endblock %}
+            </div>
+        </div>
+        {% if app.session.flashBag.peekAll() %}
+            <div class="col-xs-12">
+                {% for type, messages in app.flashes %}
+                    {% for message in messages %}
+                        <div class="alert alert-dismissible alert-{{ type }}">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                                &times;
+                            </button>
+                            {{ message|trans }}
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+    <div class="container mt-3">
+        {% block content %}
+        {% endblock %}
+    </div>
+    {{ include('footer.html.twig') }}
+{% endblock %}
