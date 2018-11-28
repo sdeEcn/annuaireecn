@@ -36,6 +36,7 @@ class pdprofil
 
     /**
      * @ORM\Column(type="datetime")
+     * @ORM\GeneratedValue(strategy="setCreatedAt")
      */
     private $createdAt;
 
