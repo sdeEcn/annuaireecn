@@ -1,0 +1,33 @@
+@import "~bootstrap/scss/bootstrap.scss";
+
+$primary-color: #fab500;
+$secondary-color: #0e2748;
+$dark-color: #091a30;
+$light-color: #f2f2f2;
+$white: white;
+$black: black;
+
+body {
+    .container-no-padding {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .blue-background {
+        background-color: $secondary-color;
+        color: $white;
+
+        .nav-item .nav-link,
+        a.navbar-brand,
+        a {
+            color: $white;
+            &visited {
+                color: $white;
+            }
+
+            &:hover {
+                color: $primary-color;
+            }
+        }
+    }
+}
