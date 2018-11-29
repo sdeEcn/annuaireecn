@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello {{ controller_name }}!{% endblock %}
+{% block stylesheet %}"{{ asset('css/search.css') }}"{% endblock %}
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+<form method="post" action="/recherche" id="envoi">
+  <div class ="search-box">
+
+  	<input class="search-text" type="text" name="requete" placeholder="Un-e Nantralien-ne, une asso...">
+  	<a class="search-btn" href="javascript:{}" onclick='document.getElementById("envoi").submit()'>
+      <i class="fas fa-search"></i>
+    </a>
+  </div>
+</form>
+
+
+{% if resultats is defined %}
+<div class="affichageRecherche">
+<div>
+  <p>Vous recherchez : {{ requete }}</p>
+</div>
+{%if resultats is empty  %}
+  <p> Aucun résultat</p>
+{% endif %}
+  <table>
+  {% for personne in resultats %}
+  <tr>
+    {%for infos in personne %}
+    <td>
+      {{ infos }}
+    </td>
+    {% endfor %}
+
+  </tr>
+  {% endfor %}
+  </table>
+</div>
+{% endif %}
+{% endblock %}
