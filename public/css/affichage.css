@@ -1,0 +1,10 @@
+body{
+  margin:0;
+  padding: 0;
+  background: #273c75;
+  color: white;
+
+}
+table, th, td {
+   border: 1px solid black;
+}
