@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity()
  */
-class Option
+class Options
 {
     /**
      * @ORM\Id
@@ -26,6 +26,13 @@ class Option
      * @ORM\Column(type="string")
      */
     private $nom;
+
+
+    public function __construct($nom)
+    {
+        $this->nom = $nom;
+    }
+
 
     /**
      * @return int

@@ -9,8 +9,9 @@ use Symfony\Component\Validator\Constraints\DateTime;
 
 /**
  * @ORM\Entity()
+ * @ORM\HasLifecycleCallbacks()
  */
-class pdprofil
+class Photo
 {
     /**
      * @ORM\Id
@@ -36,7 +37,6 @@ class pdprofil
 
     /**
      * @ORM\Column(type="datetime")
-     * @ORM\GeneratedValue(strategy="setCreatedAt")
      */
     private $createdAt;
 
@@ -106,6 +106,9 @@ class pdprofil
         return $this->createdAt;
     }
 
+    /**
+     * @ORM\PrePersist
+     */
     public function setCreatedAt(): void
     {
         $this->createdAt = new DateTime();

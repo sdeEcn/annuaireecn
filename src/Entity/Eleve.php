@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 
@@ -9,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\EleveRepository")
  */
-class eleve
+class Eleve
 {
     /**
      * @ORM\Id
@@ -39,21 +40,41 @@ class eleve
     private $promo;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\pdprofil")
+     * @ORM\ManyToOne(targetEntity="Photo")
      */
     private $pdprofil;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Option")
+     * @ORM\ManyToOne(targetEntity="Options")
      * @ORM\JoinColumn(name="option2",referencedColumnName="id",nullable=true)
      */
     private $option2;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Option")
+     * @ORM\ManyToOne(targetEntity="Options")
      * @ORM\JoinColumn(name="option3",referencedColumnName="id",nullable=true)
      */
     private $option3;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Eleve",inversedBy="suivi")
+     */
+    private $suivi;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Club",inversedBy="membres")
+     */
+    private $clubs;
+
+
+    public function __construct(string $nom, string $prenom, string $mail)
+    {
+        $this->nom=$nom;
+        $this->prenom=$prenom;
+        $this->mail=$mail;
+        $this->clubs=new ArrayCollection();
+
+    }
 
     /**
      * @return integer
@@ -130,7 +151,7 @@ class eleve
     }
 
     /**
-     * @return pdprofil
+     * @return Photo
      */
     public function getPdprofil()
     {
@@ -138,15 +159,15 @@ class eleve
     }
 
     /**
-     * @param pdprofil $pdprofil
+     * @param Photo $pdprofil
      */
-    public function setPdprofil($pdprofil): void
+    public function setPdprofil(Photo $pdprofil): void
     {
         $this->pdprofil = $pdprofil;
     }
 
     /**
-     * @return option
+     * @return Options
      */
     public function getOption2()
     {
@@ -154,15 +175,15 @@ class eleve
     }
 
     /**
-     * @param option $option2
+     * @param Options $option2
      */
-    public function setOption2($option2): void
+    public function setOption2(Options $option2): void
     {
         $this->option2 = $option2;
     }
 
     /**
-     * @return option
+     * @return Options
      */
     public function getOption3()
     {
@@ -170,11 +191,35 @@ class eleve
     }
 
     /**
-     * @param option $option3
+     * @param Options $option3
      */
-    public function setOption3($option3): void
+    public function setOption3(Options $option3): void
     {
         $this->option3 = $option3;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getClubs()
+    {
+        return $this->clubs;
+    }
+
+    /**
+     * @param Club $clubs
+     */
+    public function setClubs(Club $clubs): void
+    {
+        $this->clubs = $clubs;
+    }
+
+    public function addClubs(Club $club){
+        $this->clubs->add($club);
+    }
+
+    public function removeClubs(Club $club){
+        $this->clubs->remove($club);
     }
 
 

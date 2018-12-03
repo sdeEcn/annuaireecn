@@ -28,31 +28,31 @@ class Bureau
     private $club;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\eleve")
+     * @ORM\OneToOne(targetEntity="App\Entity\Eleve")
      * @ORM\JoinColumn(name="president_id",referencedColumnName="id")
      */
     private $president;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\eleve")
+     * @ORM\OneToOne(targetEntity="App\Entity\Eleve")
      * @ORM\JoinColumn(name="viceprezint_id",referencedColumnName="id",nullable=true)
      */
     private $viceprezint;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\eleve")
+     * @ORM\OneToOne(targetEntity="App\Entity\Eleve")
      * @ORM\JoinColumn(name="viceprezext_id",referencedColumnName="id",nullable=true)
      */
     private $viceprezext;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\eleve")
+     * @ORM\OneToOne(targetEntity="App\Entity\Eleve")
      * @ORM\JoinColumn(name="secgen_id",referencedColumnName="id",nullable=true)
      */
     private $secgen;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\eleve")
+     * @ORM\OneToOne(targetEntity="App\Entity\Eleve")
      * @ORM\JoinColumn(name="tresorier_id",referencedColumnName="id",nullable=true)
      */
     private $tresorier;
@@ -84,7 +84,7 @@ class Bureau
     }
 
     /**
-     * @return eleve
+     * @return Eleve
      */
     public function getPresident()
     {
@@ -92,7 +92,7 @@ class Bureau
     }
 
     /**
-     * @param eleve $president
+     * @param Eleve $president
      */
     public function setPresident($president): void
     {
@@ -100,7 +100,7 @@ class Bureau
     }
 
     /**
-     * @return eleve
+     * @return Eleve
      */
     public function getViceprezint()
     {
@@ -108,7 +108,7 @@ class Bureau
     }
 
     /**
-     * @param eleve $viceprezint
+     * @param Eleve $viceprezint
      */
     public function setViceprezint($viceprezint): void
     {
@@ -116,7 +116,7 @@ class Bureau
     }
 
     /**
-     * @return eleve
+     * @return Eleve
      */
     public function getViceprezext()
     {
@@ -124,7 +124,7 @@ class Bureau
     }
 
     /**
-     * @param eleve $viceprezext
+     * @param Eleve $viceprezext
      */
     public function setViceprezext($viceprezext): void
     {
@@ -132,7 +132,7 @@ class Bureau
     }
 
     /**
-     * @return eleve
+     * @return Eleve
      */
     public function getSecgen()
     {
@@ -140,7 +140,7 @@ class Bureau
     }
 
     /**
-     * @param eleve $secgen
+     * @param Eleve $secgen
      */
     public function setSecgen($secgen): void
     {
@@ -148,7 +148,7 @@ class Bureau
     }
 
     /**
-     * @return eleve
+     * @return Eleve
      */
     public function getTresorier()
     {
@@ -156,7 +156,7 @@ class Bureau
     }
 
     /**
-     * @param eleve $tresorier
+     * @param Eleve $tresorier
      */
     public function setTresorier($tresorier): void
     {

@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
+
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ClubRepository")
  */
@@ -34,15 +35,27 @@ class Club
 
     /**
      * Eleve pouvant ajouter du contenu sur la page
-     * @ORM\ManyToMany(targetEntity="App\Entity\eleve")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Eleve")
      * @ORM\JoinTable(name="clubAdmins",joinColumns={@ORM\JoinColumn(name="club_id", referencedColumnName="id")},
      *     inverseJoinColumns={@ORM\JoinColumn(name="admin_id",referencedColumnName="id")})
      */
     private $admin;
 
-    public function __construct()
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Eleve", mappedBy="clubs")
+     *@ORM\JoinTable(name="membresClub",joinColumns={@ORM\JoinColumn(name="club_id",referencedColumnName="id")},
+     *     inverseJoinColumns={@ORM\JoinColumn(name="membre_id",referencedColumnName="id")})
+     */
+    private $membres;
+
+
+
+    public function __construct(string $nom, bool $confidentialite)
     {
+        $this->nom=$nom;
+        $this->confidentialite=$confidentialite;
         $this->admin= new ArrayCollection();
+        $this->membres=new  ArrayCollection();
     }
 
     /**
@@ -116,6 +129,37 @@ class Club
         $this->admin = $admin;
     }
 
+    public function addAdmin(Eleve $admin){
+        $this->admin->add($admin);
+    }
+
+    public function removeAdmin(Eleve $admin){
+        $this->admin->remove($admin);
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getMembres()
+    {
+        return $this->membres;
+    }
+
+    /**
+     * @param ArrayCollection $membres
+     */
+    public function setMembres($membres): void
+    {
+        $this->membres = $membres;
+    }
+
+    public function addMembres(Eleve $eleve){
+        $this->membres->add($eleve);
+    }
+
+    public function removeMembres(Eleve $eleve){
+        $this->membres->remove($eleve);
+    }
 
 
 
