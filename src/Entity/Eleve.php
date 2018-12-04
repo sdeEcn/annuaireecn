@@ -73,6 +73,7 @@ class Eleve
         $this->prenom=$prenom;
         $this->mail=$mail;
         $this->clubs=new ArrayCollection();
+        $this->suivi=new ArrayCollection();
 
     }
 
@@ -220,6 +221,30 @@ class Eleve
 
     public function removeClubs(Club $club){
         $this->clubs->remove($club);
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getSuivi()
+    {
+        return $this->suivi;
+    }
+
+    /**
+     * @param Eleve $suivi
+     */
+    public function setSuivi(Eleve $suivi): void
+    {
+        $this->suivi = $suivi;
+    }
+
+    public function addSuivi(Eleve $suivi){
+        $this->suivi->add($suivi);
+    }
+
+    public function removeSuivi(Eleve $suivi){
+        $this->suivi->remove($suivi);
     }
 
 
