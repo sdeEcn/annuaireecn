@@ -17,8 +17,8 @@
   </div>
 </form>
 
-
-{% if resultats is defined %}
+<!--Affichage des résultats-->
+<!--{% if resultats is defined %}-->
 <div class="affichageRecherche">
 <div>
   <p>Vous recherchez : {{ requete }}</p>
@@ -31,8 +31,10 @@
   <tr>
     {%for infos in personne %}
     <td>
-      {{ infos }}
-    </td>
+      <p><!--Eleve_nom--></p>
+      <p><!-- Eleve_prenom>--></p>
+      <p><!-- Eleve_promo--></p>
+    </td></br>
     {% endfor %}
 
   </tr>
