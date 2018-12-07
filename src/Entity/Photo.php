@@ -26,6 +26,7 @@ class Photo
     private $nom;
 
     /**
+     * url de l'image. Attention : ne pas y inclure l'extension de la photo. (.jpeg)
      * @ORM\Column(type="string")
      */
     private $lien;

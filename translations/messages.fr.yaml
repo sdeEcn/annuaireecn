@@ -2,8 +2,10 @@ common:
     directory: Annuaire ECN
     clubs: Clubs
     login: Se connecter
+    logout: Se déconnecter
     options: Options
     students: Élèves
+
 
 page:
     default:
@@ -27,3 +29,13 @@ page:
     footer:
         copyright: Copyrigth Cloud des Élèves
         allRightsReserved: Tous droits réservés
+
+title:
+    login: 'Connexion'
+
+label:
+    username: "Adresse mail"
+    password: "Mot de passe"
+
+action:
+    sign_in: "Connectez-vous"

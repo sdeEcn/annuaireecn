@@ -22,7 +22,7 @@ class Bureau
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Club",inversedBy="bureau")
+     * @ORM\OneToOne(targetEntity="App\Entity\Club",mappedBy="bureau")
      * @ORM\JoinColumn(name="club_id",referencedColumnName="id")
      */
     private $club;

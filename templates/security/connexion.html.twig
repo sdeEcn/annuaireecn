@@ -1,0 +1,47 @@
+{% extends 'layout.html.twig' %}
+
+{% block stylesheet %}
+    <style type="text/css">
+        .footer{
+            position: absolute;
+            bottom: 0px;
+        }
+    </style>
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    {% if error %}
+        <div class="alert alert-danger">
+            {{ error.messageKey|trans(error.messageData, 'Security') }}
+        </div>
+    {% endif %}
+
+    <div class="row">
+        <div class="col-sm-4 col-sm-offset-4 ">
+            <div class="well">
+                <form action="{{ path('app.user.login') }}" method="post">
+                    <fieldset>
+                        <legend><i class="fa fa-lock" aria-hidden="true"></i> {{ 'title.login'|trans }}</legend>
+                        <div class="form-group">
+                            <label for="username">{{ 'label.username'|trans }}</label>
+                            <input type="text" id="username" name="username" value="{{ last_username }}" class="form-control"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">{{ 'label.password'|trans }}</label>
+                            <input type="password" id="password" name="password" class="form-control" />
+                        </div>
+                        <input type="hidden" name="_target_path" value="{{ app.request.get('redirect_to') }}"/>
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}"/>
+                        <input type="checkbox" id="remember_me" class="checkbox" name="_remember_me" checked />
+                        <label for="remember_me">Rester connecté</label>
+                        <br/>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-sign-in-alt"></i> {{ 'action.sign_in'|trans }}
+                        </button>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

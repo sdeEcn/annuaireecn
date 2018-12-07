@@ -1,24 +1,28 @@
+# config/Security.yaml
+
 security:
-    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
+    encoders:
+        App\Entity\Eleve: bcrypt
+
     providers:
-        in_memory: { memory: ~ }
+        database_users:
+            entity: { class: App\Entity\Eleve, property: username }
+
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+
         main:
+            pattern: ^/
             anonymous: true
+            logout:
+                path: app.user.logout
+            guard:
+                authenticators:
+                    - App\Security\FormLogin
 
-            # activate different ways to authenticate
-
-            # http_basic: true
-            # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
-
-            # form_login: true
-            # https://symfony.com/doc/current/security/form_login_setup.html
-
-    # Easy way to control access for large sections of your site
-    # Note: Only the *first* access control that matches will be used
-    access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+            remember_me:
+                secret:   '%kernel.secret%'
+                lifetime: 604800
+                path:     /

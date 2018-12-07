@@ -4,13 +4,15 @@ namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\EleveRepository")
  */
-class Eleve
+class Eleve implements UserInterface
 {
     /**
      * @ORM\Id
@@ -21,16 +23,20 @@ class Eleve
 
     /**
      * @ORM\Column(type="string",length=155)
+     * @Assert\NotBlank()
      */
     private $nom;
 
     /**
      * @ORM\Column(type="string",length=155)
+     * @Assert\NotBlank()
      */
     private $prenom;
 
     /**
-     * @ORM\Column(type="string", length=155)
+     * @ORM\Column(type="string", unique=true,name="username")
+     * @Assert\Email()
+     * @Assert\NotBlank()
      */
     private $mail;
 
@@ -57,14 +63,33 @@ class Eleve
     private $option3;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Eleve",inversedBy="suivi")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Eleve",mappedBy="messuiveurs")
+
      */
-    private $suivi;
+    private $messuivis;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Eleve",inversedBy="messuivis")
+     * @ORM\JoinTable(name="suiveur",
+     *     joinColumns={@ORM\JoinColumn(name="suivi_id", referencedColumnName="id")},
+     *     inverseJoinColumns={@ORM\JoinColumn(name="suiveur_id",referencedColumnName="id")})
+     */
+    private $messuiveurs;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Club",inversedBy="membres")
      */
     private $clubs;
+
+    /**
+     * @ORM\Column(type="json")
+     */
+    private $roles = [];
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    private $password;
 
 
     public function __construct(string $nom, string $prenom, string $mail)
@@ -73,7 +98,8 @@ class Eleve
         $this->prenom=$prenom;
         $this->mail=$mail;
         $this->clubs=new ArrayCollection();
-        $this->suivi=new ArrayCollection();
+        $this->messuivis=new ArrayCollection();
+        $this->messuiveurs=new ArrayCollection();
 
     }
 
@@ -226,27 +252,137 @@ class Eleve
     /**
      * @return ArrayCollection
      */
-    public function getSuivi()
+    public function getMessuivis()
     {
-        return $this->suivi;
+        return $this->messuivis;
     }
 
     /**
      * @param Eleve $suivi
      */
-    public function setSuivi(Eleve $suivi): void
+    public function setMessuivis(Eleve $suivi): void
     {
-        $this->suivi = $suivi;
-    }
-
-    public function addSuivi(Eleve $suivi){
-        $this->suivi->add($suivi);
-    }
-
-    public function removeSuivi(Eleve $suivi){
-        $this->suivi->remove($suivi);
+        $this->messuivis = $suivi;
     }
 
 
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
 
+        if (empty($roles)) {
+            $roles[] = 'ROLE_USER';
+        }
+
+        return array_unique($roles);
+    }
+
+    public function addRoles(string $string){
+        if(!array_search($string,$this->roles)){
+            $this->roles[]=$string;
+        }
+    }
+
+    public function removeRole(string $role){
+        $i = array_search($role,$this->roles);
+        if($i){
+            unset($this->roles[$i]);
+            return true;
+        }
+        return false;
+    }
+
+    public function setRoles(array $roles): void
+    {
+        $this->roles = $roles;
+    }
+
+    public function getSalt(): ?string
+    {
+        return null;
+    }
+
+    public function eraseCredentials(): void
+    {
+    }
+
+
+    public function setPassword(string $pass)
+    {
+        $this->password = $pass;
+    }
+
+    public function getUsername()
+    {
+        return $this->mail;
+    }
+
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getMessuiveurs()
+    {
+        return $this->messuiveurs;
+    }
+
+    /**
+     * @param ArrayCollection $messuiveurs
+     */
+    public function setMessuiveurs($messuiveurs): void
+    {
+        $this->messuiveurs = $messuiveurs;
+    }
+
+    public function addSuiveur(Eleve $suivi){
+        $this->messuiveurs->add($suivi);
+    }
+
+    public function removeSuiveur(Eleve $suivi){
+        $this->messuiveurs->remove($suivi);
+    }
+
+
+
+
+
+
+    public function checkPassword($pwd, &$errors) {
+        $errors_init = $errors;
+
+        if (strlen($pwd) < 8) {
+            $errors[] = "Mot de passe trop court!";
+        }
+
+        if (!preg_match("#[0-9]+#", $pwd)) {
+            $errors[] = "Le mot de passe doit contenir au moins un chiffre!";
+        }
+
+        if (!preg_match("#[a-zA-Z]+#", $pwd)) {
+            $errors[] = "Le mot de passe doit contenir au moins une lettre!";
+        }
+        else if (!preg_match("#[a-z]+#", $pwd)) {
+            $errors[] = "Le mot de passe doit contenir au moins une lettre minuscule!";
+        }
+        else if (!preg_match("#[A-Z]+#", $pwd)) {
+            $errors[] = "Le mot de passe doit contenir au moins une lettre majuscule!";
+        }
+
+        return ($errors == $errors_init);
+    }
+
+
+
+    public function encodePassword(UserPasswordEncoderInterface $passwordEncoder):string
+    {
+        $encoded = $passwordEncoder->encodePassword(
+            $this,
+            $this->getPassword()
+        );
+        return $encoded;
+    }
 }

@@ -16,7 +16,11 @@
                 <a class="nav-link" href="#Options">{{ 'common.options'|trans }}</a>
             </li>
             <li class="nav-item ml-auto">
-                <a class="nav-link" href="#se-connecter">{{ 'common.login'|trans }}</a>
+                {% if app.user %}
+                <a class="nav-link" href="/logout">{{ 'common.logout'|trans }}</a>
+                {% else %}
+                <a class="nav-link" href="/login">{{ 'common.login'|trans }}</a>
+                {% endif %}
             </li>
         </ul>
     </div>
