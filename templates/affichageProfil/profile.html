@@ -1,0 +1,77 @@
+<!DOCTYPE HTML>
+<link href="css/bootstrap.css" rel="stylesheet">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+<link rel="stylesheet" href="affichage.css">
+
+<body>
+  <div class="container" id="banniere">
+    <div class="row">
+
+      <div class="col-lg-1" id="divPic">
+        <img  src="pp.jpg" class="img-circle" id="profilePic">
+      </div>
+      <!--Si droits modif mon profil-->
+      <div class="col-lg-1" id="edit">
+        <a href='/modifierMonProfil'>
+          <i class="fas fa-edit"></i>
+        </a>
+      </div>
+    </div>
+    <div class="row" id="profileName">
+      <div>
+        <h1>{{Eleve_prenom}} | {{Eleve_nom}}</h1>
+      </div>
+
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-2">
+        <p>Promo : {{Eleve_promo}}</p>
+        <!-- Si option ei2-->
+        <p>EI2 : {{Eleve_optionEi2}}</p>
+        <!-- Si EI3-->
+        <p>EI3 : {{Eleve_optionEI3}}</p>
+        <p>Option Pro : {{Eleve_OP}}</p>
+      </div>
+      <div class="col-lg-5">
+        <div>
+          <h2>Associations</h2>
+          <table class="table table-bordered table-striped table-condensed">
+            <tr>
+              <!--{{for Associations }}-->
+              <td>
+                <!-- A terme logo du club et au survol transparence + nom -->
+                <p>{{Association_nom}}</p>
+                <p>{{Fonction}}</p>
+              <td>
+            <!--end for-->
+            </tr>
+          </table>
+        </div>
+        <div>
+          <h2>Stages</h2>
+          <table class="table table-bordered table-striped table-condensed">
+            <tr>
+              <!--{{for Stages }}-->
+              <td>
+                <!-- A terme logo de l'entreprise et au survol transparence + nom -->
+                <p>{{Stage_type}}</p>
+                <p>{{Entreprise_nom}}</p>
+                <p>{{Stage_date}}</p>
+              <td>
+                <!--end for-->
+            </tr>
+          </table>
+        </div>
+        <div>
+          <h2>Parcours International</h2>
+          <h3>Double Diplome</h3>
+          <p>{{Pays_nom}}</p>
+          <p>{{Universite_nom}}</p>
+          <p>{{Master_nom}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>

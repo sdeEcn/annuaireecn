@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+<link href="css/bootstrap.css" rel="stylesheet">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+<link rel="stylesheet" href="affichage.css">
+
+<body>
+  <div class="container" id="banniere">
+    <div class="row">
+
+      <div class="col-lg-1" id="divPic">
+        <img  src={{associationPic}} class="img-circle" id="profilePic">
+      </div>
+      <!--Si droits modif mon profil-->
+      <div class="col-lg-1" id="edit">
+        <a href='/modifierMonProfil'>
+          <i class="fas fa-edit"></i>
+        </a>
+      </div>
+    </div>
+    <div class="row" id="profileName">
+      <div>
+        <h1>{{Association_nom}}}</h1>
+      </div>
+
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-2">
+	  <!--Dire si c'est une association, un club BDE/BDA/BDS/autre-->
+        <p>{{Club_type}}</p>
+      </div>
+      <div class="col-lg-5">
+        <div>
+          <h2>Le mot</h2>
+		  <p>{{Club_description}}</p>
+        </div>
+        <div>
+          <h2>Contacts</h2>
+          <table class="table table-bordered table-striped table-condensed">
+            <tr>
+              <!--{{for MembreBureau }}-->
+              <td>
+                <!-- A terme pp de la personne et au survol transparence + nom -->
+				<a href='Elves\{{Eleve_id}}'>
+                <p>{{Eleve_nom}}</p>
+                <p>{{Eleve_prenom}}</p>
+				</a>
+              <td>
+                <!--end for-->
+            </tr>
+          </table>
+        </div>
+        <div>
+          <h2>Membres</h2>
+		  <table class="table table-bordered table-striped table-condensed">
+            <tr>
+              <!--{{for Membre }}-->
+              <td>
+                <!-- A terme pp de la personne et au survol transparence + nom -->
+				<a href='Elves\{{Eleve_id}}'>
+                <p>{{Eleve_nom}}</p>
+                <p>{{Eleve_prenom}}</p>
+				</a>
+              <td>
+                <!--end for-->
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
