@@ -6,6 +6,7 @@
 
 {% block pageHeader %}
     {{ user.nom }} {{ user.prenom }}
+
 {% endblock %}
 
 {% block pageDescription %}
@@ -13,5 +14,52 @@
 {% endblock %}
 
 {%  block content %}
-    {{ user.nom }}
+    {{ user.nom }}<br/>
+    {% if app.user %}
+        {% include 'user/suivreButton.html.twig' %}
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(document).ready(function () {
+            const suivre = $("#suivreUser");
+
+            suivre.on("click", function () {
+                $.ajax("{{ path('app.userAjax.submit',{'id':user.id}) }}",
+                    {
+                        success : function (data) {
+                            data = $.parseJSON(data);
+                            if(data.suivi){
+                                suivre.html("{{ 'common.actions.unfollow'|trans }}");
+                                suivre.addClass("btn-danger");
+                                suivre.removeClass("btn-default");
+                            }else{
+                                suivre.html("{{ 'common.actions.follow'|trans }}");
+                                suivre.removeClass("btn-danger");
+                                suivre.addClass("btn-default");
+                            }
+                        }
+                    });
+            });
+
+            $.ajax("{{ path("app.userAjax.getsubmit",{'id':user.id}) }}",{
+                success : function (data) {
+                    data = $.parseJSON(data);
+                    if(!data.suivi) {
+                        suivre.html("{{ 'common.actions.follow'|trans }}");
+                        suivre.addClass("btn-default");
+                    }else{
+                        suivre.html("{{ 'common.actions.unfollow'|trans }}");
+                        suivre.addClass("btn-danger");
+
+                    }
+                }
+            });
+
+
+
+        });
+    </script>
 {% endblock %}

@@ -5,6 +5,11 @@ common:
     logout: Se déconnecter
     options: Options
     students: Élèves
+    actions:
+        follow: Suivre
+        unfollow: Ne plus suivre
+    errors:
+        errorauthentification : Adresse mail ou/et mot de passe invalide
 
 
 page:

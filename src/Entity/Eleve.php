@@ -246,7 +246,7 @@ class Eleve implements UserInterface
     }
 
     public function removeClubs(Club $club){
-        $this->clubs->remove($club);
+        $this->clubs->removeElement($club);
     }
 
     /**
@@ -343,7 +343,7 @@ class Eleve implements UserInterface
     }
 
     public function removeSuiveur(Eleve $suivi){
-        $this->messuiveurs->remove($suivi);
+        $this->messuiveurs->removeElement($suivi);
     }
 
 

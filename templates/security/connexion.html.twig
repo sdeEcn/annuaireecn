@@ -13,7 +13,7 @@
 {% block content %}
     {% if error %}
         <div class="alert alert-danger">
-            {{ error.messageKey|trans(error.messageData, 'Security') }}
+            {{"common.errors.errorauthentification"|trans}}
         </div>
     {% endif %}
 
