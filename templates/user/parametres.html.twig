@@ -1,0 +1,138 @@
+{% extends 'layout.html.twig' %}
+{% block title %}
+    {{ 'common.params'|trans }}
+{% endblock %}
+
+{% block pageHeader %}
+    {{ 'common.params'|trans }}
+{% endblock %}
+
+{% block stylesheet %}
+    <style type="text/css">
+        .footer{
+            position: absolute;
+            bottom: 0px;
+        }
+
+        @media screen and (max-width: 767.98px)
+        {
+            .footer{
+                position: static;
+            }
+        }
+    </style>
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-sm-12">
+        <h3>{{ 'params.passwordtitle'|trans }}
+            <button type="button" class="btn btn-link infopw" data-toggle="tooltip" data-placement="right" title="{{ "params.pwconsignes"|trans }}">
+                <i class="fas fa-info-circle"></i>
+            </button>
+        </h3>
+        </div>
+    </div>
+    <div class="alert-pass alert d-none" role="alert">
+    </div>
+    <div class="row col-sm-12 mt-3 mb-4">
+        <form class="form col-sm-8" id="formpw">
+            <div class="form-group form-row">
+                <label for="password" class=" col-sm-4 col-form-label">{{ 'params.oldpassword'|trans }} : </label>
+                <input type="password" class="form-control col-sm-7 col-xs-11" id="pass" placeholder="{{ 'params.oldpassword1'|trans }}">
+            </div>
+
+            <div class="form-group form-row">
+                <label for="newpassword" class=" col-sm-4 col-form-label">{{ 'params.newpassword'|trans }} : </label>
+                <input type="password" class=" newpass form-control col-sm-7" id="newpassword" placeholder="{{ 'params.newpassword'|trans }}">
+                <div class="ok1 col-sm-1  col-form-label text-right d-none"></div>
+            </div>
+
+            <div class="form-group form-row">
+                <label for="confpassword" class=" col-sm-4 col-form-label">{{ 'params.confirmpassword'|trans }} : </label>
+                <input type="password" class="confpass form-control col-sm-7" id="confpassword" placeholder="{{ 'params.confirmpassword'|trans }}">
+            </div>
+
+            <input type="submit" id="changepassword" class="btn btn-primary float-right" value="{{ 'params.passwordtitle'|trans }}">
+        </form>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        function checkpass(pass){
+            var lowerCaseLetters = new RegExp(/[a-z]/i);
+            var numbers = new RegExp(/[0-9]/i);
+            var upperCaseLetters = new RegExp(/[A-Z]/i);
+            return (lowerCaseLetters.test(pass) && numbers.test(pass) && upperCaseLetters.test(pass) && pass.length>8);
+
+        }
+
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+
+
+            var good = false;
+
+            $("#newpassword").keyup(function (){
+                good= checkpass($(".newpass").val());
+                $(".ok1").removeClass("d-none");
+
+                if(good){
+                    $(".ok1").html('<i class="fas fa-check-circle" style="color:green;"></i>');
+                }else{
+                    $(".ok1").html('<i class="fas fa-ban" style="color:red;"></i>');
+                }
+            });
+
+            $("#formpw").on("submit",function (event) {
+                event.preventDefault();
+                var newpass = $(".newpass");
+                var alert1 = $('.alert-pass');
+                if(checkpass(newpass.val()) ){
+                    if( newpass.val()=== $(".confpass").val()) {
+                        var request = $.ajax({
+                            method: "POST",
+                            url: '{{ path("app.user.ajaxpasswd") }}',
+                            data: {
+                                password: $("#pass").val()
+                                , newpw: newpass.val()
+                            },
+
+                        });
+                        request.done(function (data) {
+                            data = $.parseJSON(data);
+
+                            if (data.message === "OK") {
+                                alert1.removeClass('d-none');
+                                alert1.addClass("alert-success");
+                                alert1.html("{{ "params.success"|trans }}");
+                            } else if (data.message === "MAUVAIS") {
+                                alert1.removeClass('d-none');
+                                alert1.addClass("alert-danger");
+                                alert1.html("Erreur : {{ "params.errors.pw"|trans }}");
+                            } else if (data.message === "INVALID") {
+                                alert1.removeClass('d-none');
+                                alert1.addClass("alert-danger");
+                                alert1.html("Erreur : {{ "params.errors.invalid"|trans }}");
+                            }
+                        });
+                    }else{
+                        alert1.removeClass('d-none');
+                        alert1.addClass("alert-danger");
+                        alert1.html("Erreur : {{ "params.errors.conf"|trans }}");
+                    }
+                }else{
+                    alert1.removeClass('d-none');
+                    alert1.addClass("alert-danger");
+                    alert1.html("Erreur : {{ "params.errors.invalid"|trans }}");
+                }
+                
+            });
+
+        });
+
+    </script>
+{% endblock %}

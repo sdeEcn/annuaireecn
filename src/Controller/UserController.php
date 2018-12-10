@@ -10,7 +10,9 @@ namespace App\Controller;
 
 
 use App\Entity\Eleve;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
@@ -50,6 +52,17 @@ class UserController extends AbstractController
         throw new \Exception('This should never be reached!');
     }
 
+    /**
+     * @IsGranted("ROLE_USER")
+     * @Route("/user/monprofil",name="app.user.own")
+     */
+    public function myProfil():Response
+    {
+
+        $user = $this->getUser();
+
+        return $this->render('user/monprofil.html.twig',array('user' => $user));
+    }
 
     /**
      * @Route("/user/{id}",name="app.user")
@@ -58,8 +71,24 @@ class UserController extends AbstractController
     {
         $repository = $this->getDoctrine()->getRepository(Eleve::class);
 
+        if($this->getUser()!=null){
+            if($this->getUser()->getId()==$id){
+                return new RedirectResponse("/user/monprofil");
+            }
+        }
         $user = $repository->find($id);
 
         return $this->render('default/user.html.twig',array('user' => $user));
     }
+
+    /**
+     * @IsGranted("ROLE_USER")
+     * @Route("/Parametres/",name="app.user.params")
+     */
+    public function params():Response
+    {
+
+        return $this->render("user/parametres.html.twig");
+    }
+
 }

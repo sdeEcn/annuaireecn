@@ -385,4 +385,13 @@ class Eleve implements UserInterface
         );
         return $encoded;
     }
+
+    public function encodePassword1(UserPasswordEncoderInterface $passwordEncoder, string $test):string
+    {
+        $encoded = $passwordEncoder->encodePassword(
+            $this,
+            $test
+        );
+        return $encoded;
+    }
 }

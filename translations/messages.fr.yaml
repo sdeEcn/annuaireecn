@@ -5,12 +5,27 @@ common:
     logout: Se déconnecter
     options: Options
     students: Élèves
+    profil: Mon profil
+    params: Paramètres
     actions:
         follow: Suivre
         unfollow: Ne plus suivre
     errors:
         errorauthentification : Adresse mail ou/et mot de passe invalide
 
+params:
+    pwconsignes: Longueur supérieure à 8 caractères, 1 chiffre, 1 minuscule et majuscule minimum
+    oldpassword: Mot de passe actuel
+    newpassword: Nouveau mot de passe
+    confirmpassword: Confirmez le mot de passe
+    oldpassword1: Entrez votre mot de passe actuel
+    password: Mot de passe
+    passwordtitle: Changer de mot de passe
+    success: Le mot de passe à été changé avec succès!
+    errors:
+        pw: Vous avez entré le mauvais mot de passe!
+        conf: Le mot de passe ne correspond pas à sa confirmation!
+        invalid: Le nouveau mot de passe ne correspond pas aux critères de sécurité!
 
 page:
     default:

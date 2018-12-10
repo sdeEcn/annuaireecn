@@ -12,8 +12,11 @@ namespace App\Controller;
 use App\Entity\Eleve;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserAjaxController extends AbstractController
 {
@@ -49,6 +52,35 @@ class UserAjaxController extends AbstractController
         $suivi = $user->getMessuiveurs()->contains($this->getUser());
 
         return new Response(json_encode(array("suivi"=>$suivi)));
+    }
+
+    /**
+     * @IsGranted("ROLE_USER")
+     * @Route("UserConnected/changePw",name="app.user.ajaxpasswd",condition="request.isXmlHttpRequest()")
+     */
+    public function changepw(Request $request, UserPasswordEncoderInterface $passwordEncoder):Response
+    {
+        $em = $this->getDoctrine()->getManager();
+        $message="";
+        $user = $em->getRepository(Eleve::class)->find($this->getUser()->getId());
+        $pass=$request->request->get('newpw');
+        if($passwordEncoder->isPasswordValid($user,$request->request->get("password"))){
+            $error = array();
+            if($user->checkPassword($pass ,$error)){
+                $user->setPassword($pass);
+                $user->setPassword($user->encodePassword($passwordEncoder));
+                $em->flush();
+                $message="OK";
+            }else{
+                $message = "INVALID";
+            }
+
+        }else{
+            $message="MAUVAIS";
+        }
+
+        return new Response(json_encode(array("message"=>$message)));
+
     }
 
 }
