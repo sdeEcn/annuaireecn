@@ -13,9 +13,7 @@ class AffichageRechercheController extends AbstractController
     {
       $conn = $this->getDoctrine()->getEntityManager()->getConnection();
 
-    $sql = '
-        SELECT Eleve_Nom, Eleve_Prenom FROM Eleves WHERE Eleve_Nom LIKE :recherche OR Eleve_Prenom LIKE :recherche;
-        ';
+    $sql = 'SELECT Eleve_Nom, Eleve_Prenom FROM Eleves WHERE Eleve_Nom LIKE :recherche OR Eleve_Prenom LIKE :recherche;';
     $stmt = $conn->prepare($sql);
     $stmt->execute(['recherche' => $_POST["requete"]]);
 

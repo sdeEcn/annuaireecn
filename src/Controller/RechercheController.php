@@ -7,29 +7,20 @@ use Symfony\Component\Routing\Annotation\Route;
 class RechercheController extends AbstractController
 {
     /**
-     * @Route("/recherche", name="recherche")
+     * @Route("/rechercheEleve", name="rechercheEleve")
      */
-    public function index()
+    public function indexEleve()
     {
-      if (isset($_POST["requete"]) ){
-      $conn = $this->getDoctrine()->getEntityManager()->getConnection();
 
-    $sql = '
-        SELECT Eleve_Nom, Eleve_Prenom FROM Eleves WHERE Eleve_Nom LIKE :recherche OR Eleve_Prenom LIKE :recherche;
-        ';
-    $stmt = $conn->prepare($sql);
-    $stmt->execute(['recherche' => $_POST["requete"]]);
+        return $this->render('recherche/searchEleve.html.twig');
+    }
 
-    // returns an array of arrays (i.e. a raw data set)
-    $result = $stmt->fetchAll();
-        return $this->render('recherche/index.html.twig', [
-            'controller_name' => 'RechercheController',
-            'resultats' => $result,
-            'requete' => $_POST["requete"],
-        ]);
-      }
-        return $this->render('recherche/index.html.twig', [
-            'controller_name' => 'RechercheController',
-        ]);
+    /**
+     * @Route("/rechercheClub", name="rechercheClub")
+     */
+    public function indexClub()
+    {
+
+        return $this->render('recherche/searchClub.html.twig');
     }
 }

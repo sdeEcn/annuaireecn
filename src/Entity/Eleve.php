@@ -77,7 +77,7 @@ class Eleve implements UserInterface
     private $messuiveurs;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Club",inversedBy="membres")
+     * @ORM\OneToMany(targetEntity="App\Entity\ClubEleves",mappedBy="eleve",fetch="EXTRA_LAZY")
      */
     private $clubs;
 
@@ -234,18 +234,18 @@ class Eleve implements UserInterface
     }
 
     /**
-     * @param Club $clubs
+     * @param ClubEleves $clubs
      */
-    public function setClubs(Club $clubs): void
+    public function setClubs(ClubEleves $clubs): void
     {
         $this->clubs = $clubs;
     }
 
-    public function addClubs(Club $club){
+    public function addClubs(ClubEleves $club){
         $this->clubs->add($club);
     }
 
-    public function removeClubs(Club $club){
+    public function removeClubs(ClubEleves $club){
         $this->clubs->removeElement($club);
     }
 

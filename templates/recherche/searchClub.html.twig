@@ -1,0 +1,67 @@
+{% extends 'layout.html.twig' %}
+{% block stylesheet %}
+    {{ parent() }}
+    <style type="text/css">
+        .searchbar{
+            margin-bottom: auto;
+            margin-top: auto;
+            height: 40px;
+            background-color: #1D3261;
+            border-radius: 20px;
+            padding: 5px;
+        }
+
+        .search_input{
+            color: white;
+            border: 0;
+            outline: 0;
+            background: none;
+            line-height: 30px;
+            transition: width 0.4s linear;
+            padding: 0 10px;
+            width:87%;
+        }
+
+        .searchbar:hover > .search_icon{
+            background: white;
+            color: #e74c3c;
+        }
+
+        .search_icon{
+            height: 30px;
+            width: 30px;
+            float: right;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            color:white;
+            border: 0px !important;
+            background-color: #ffffff00;
+
+        }
+        .search_icon:hover{
+            text-decoration: none ;
+        }
+    </style>
+{% endblock %}
+
+{% block search %}
+    <div class="container">
+        <div class="d-flex justify-content-center">
+            <form class="row col-sm-6">
+                <div class="searchbar col-sm-12">
+                    <input class="search_input" type="text" name="" placeholder="Search...">
+                    <button href="#" class="search_icon"><i class="fas fa-search"></i></button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script >
+        $(document).ready(function () {
+        });
+    </script>
+{% endblock %}

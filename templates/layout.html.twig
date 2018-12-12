@@ -6,6 +6,9 @@
     </div>
     <div class="container-fluid mt-2">
         {{ include('header.html.twig') }}
+        <div class="search row">
+            {% block search %}{% endblock %}
+        </div>
         <div class="row">
             <div class="col-md-8 col-sm-12 mb-2">
                 <h2>{% block pageHeader %}{% endblock %}</h2>

@@ -24,6 +24,29 @@ class Club
     private $nom;
 
     /**
+     * @ORM\Column(type="string",nullable=True)
+     */
+    private $mail;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $bde=false;
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $bds=false;
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $bda=false;
+
+    /**
+     * @ORM\Column(type="text")
+     */
+    private $description="";
+
+    /**
      * @ORM\Column(type="boolean")
      */
     private $confidentialite=false; //true = visible par ses membres lors de la recherche (pas d'accès au contenu du club)
@@ -42,9 +65,7 @@ class Club
     private $admin;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Eleve", mappedBy="clubs")
-     *@ORM\JoinTable(name="membresClub",joinColumns={@ORM\JoinColumn(name="club_id",referencedColumnName="id")},
-     *     inverseJoinColumns={@ORM\JoinColumn(name="membre_id",referencedColumnName="id")})
+     * @ORM\OneToMany(targetEntity="App\Entity\ClubEleves", mappedBy="club",fetch="EXTRA_LAZY")
      */
     private $membres;
 
@@ -110,6 +131,7 @@ class Club
      */
     public function setBureau($bureau): void
     {
+        $bureau->setClub($this);
         $this->bureau = $bureau;
     }
 
@@ -153,13 +175,92 @@ class Club
         $this->membres = $membres;
     }
 
-    public function addMembres(Eleve $eleve){
+    public function addMembres(ClubEleves $eleve){
         $this->membres->add($eleve);
     }
 
-    public function removeMembres(Eleve $eleve){
+    public function removeMembres(ClubEleves $eleve){
         $this->membres->remove($eleve);
     }
+
+
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param mixed $description
+     */
+    public function setDescription($description): void
+    {
+        $this->description = $description;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function isBde()
+    {
+        return $this->bde;
+    }
+
+    /**
+     * @param mixed $bde
+     */
+    public function setBde($bde): void
+    {
+        $this->bde = $bde;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function isBds()
+    {
+        return $this->bds;
+    }
+
+    /**
+     * @param mixed $bds
+     */
+    public function setBds($bds): void
+    {
+        $this->bds = $bds;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function isBda()
+    {
+        return $this->bda;
+    }
+
+    /**
+     * @param mixed $bda
+     */
+    public function setBda($bda): void
+    {
+        $this->bda = $bda;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMail()
+    {
+        return $this->mail;
+    }
+
+    /**
+     * @param string $mail
+     */
+    public function setMail($mail): void
+    {
+        $this->mail = $mail;
+    }
+
 
 
 

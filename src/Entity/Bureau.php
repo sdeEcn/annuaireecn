@@ -23,7 +23,7 @@ class Bureau
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Club",mappedBy="bureau")
-     * @ORM\JoinColumn(name="club_id",referencedColumnName="id")
+     * @ORM\JoinColumn(name="club_id",referencedColumnName="id", onDelete="CASCADE")
      */
     private $club;
 

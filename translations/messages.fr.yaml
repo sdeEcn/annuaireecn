@@ -10,6 +10,7 @@ common:
     actions:
         follow: Suivre
         unfollow: Ne plus suivre
+        asked: Demandé
     errors:
         errorauthentification : Adresse mail ou/et mot de passe invalide
 
@@ -29,8 +30,7 @@ params:
 
 page:
     default:
-        description: "L'annuaire ECN est un site permettant la recherche d'anciens élèves à travers de nombreux filtres : option, promo,
-            stages effectués, domaine d'étude, etc... afin de faciliter les rencontres inter-promotions."
+        description: "Cette plateforme est proposée aux élèves afin de leur permettre de s'inscrire à leurs associations et de rechercher les autres centraliens. De plus cette pateforme est évolutive et le serveur des élèves est à l'écoute des propositions des élèves afin d'améliorer ses services."
         loremIpsum1: |
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus non augue tincidunt, malesuada lectus vel, ultrices quam. Curabitur hendrerit diam quis ante egestas, a facilisis tortor interdum. Nam in velit pellentesque orci scelerisque malesuada. Pellentesque nulla odio, blandit vel cursus nec, accumsan quis augue. Cras convallis, tellus suscipit eleifend ultrices, tortor dui convallis neque, quis vulputate nisi urna id magna. Duis rhoncus velit imperdiet aliquet pharetra. Curabitur leo dolor, elementum sit amet consequat vel, sagittis vel sem. Nunc neque ipsum, cursus sed quam eu, venenatis efficitur tortor. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aliquam lobortis eros nunc, eu mollis nibh vulputate in. Duis convallis nisl magna, eu feugiat nulla dapibus sit amet. Nunc placerat nunc ut justo tincidunt, at congue orci fringilla. Vivamus sollicitudin arcu sed velit consectetur, finibus tincidunt lectus viverra. Fusce iaculis dui eu ante facilisis imperdiet. Proin orci tortor, rutrum quis vehicula at, eleifend at dui. Nullam eget dui sed erat convallis porta.
 
@@ -45,7 +45,7 @@ page:
             Maecenas pulvinar metus eros, a placerat ligula ornare commodo. Integer sed metus tellus. Aenean lorem ipsum, ornare eget facilisis id, fringilla nec felis. Quisque non vulputate nulla, interdum interdum lorem. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Vestibulum tempor suscipit eros pretium luctus. Nam rutrum risus tellus, eget dapibus arcu mollis et. Quisque lobortis enim id vehicula sagittis. Etiam et ultricies libero. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce quis porta odio, non placerat tortor.
 
             Morbi ut facilisis metus. Donec nec lacinia est, sit amet tempor libero. Interdum et malesuada fames ac ante ipsum primis in faucibus. Morbi sollicitudin ante eget luctus ullamcorper. Suspendisse vehicula lectus tellus, nec porta dui sollicitudin eget. Sed molestie placerat libero vitae malesuada. Ut aliquam vulputate justo, vitae dignissim ligula suscipit eget. Nullam finibus varius arcu sed iaculis. Cras sodales lectus maximus lorem posuere fringilla. Quisque aliquet ultricies turpis sit amet laoreet. Nullam vulputate elit a elit vestibulum, vel bibendum neque vestibulum. Phasellus quis enim ut odio consequat tincidunt in ut lorem. Donec congue libero justo, nec interdum enim congue posuere.
-        welcome: Bienvenu sur l'annuaire ECN
+        welcome: Bienvenue sur la plateforme des élèves de l'école Centrale de Nantes
     footer:
         copyright: Copyrigth Cloud des Élèves
         allRightsReserved: Tous droits réservés

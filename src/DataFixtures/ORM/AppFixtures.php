@@ -2,6 +2,8 @@
 
 namespace App\DataFixtures\ORM;
 
+use App\Entity\Bureau;
+use App\Entity\Club;
 use App\Entity\eleve;
 use App\Entity\Options;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -40,9 +42,30 @@ class AppFixtures extends Fixture
         $eleve->setPassword('pass');
         $eleve->setPassword($eleve->encodePassword($this->encoder));
         $eleve->addSuiveur($eleve1);
+
+        $bureau = new Bureau();
+        $bureau->setPresident($eleve);
+        $bureau->setViceprezint($eleve1);
+        $bureau1 = new Bureau();
+        $bureau1->setPresident($eleve1);
+        $club = new Club("BDE",0);
+        $club1 = new Club("NEMO",1);
+
+        $club->setBureau($bureau);
+        $club->setDescription("Le BDE est la principale association étudiante de l'école et organise les évènements de l'année");
+
+        $club1->setBureau($bureau1);
+
+        $club->addAdmin($eleve1);
+        $club1->addAdmin($eleve1);
+
         $manager->persist($eleve1);
         $manager->persist($eleve);
 
+        $manager->persist($bureau);
+        $manager->persist($bureau1);
+        $manager->persist($club);
+        $manager->persist($club1);
         $manager->flush();
     }
 }

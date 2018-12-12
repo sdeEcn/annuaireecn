@@ -1,0 +1,143 @@
+{% extends 'layoutProfil.html.twig' %}
+
+{% block title %}
+    {{ club.nom }}
+{% endblock %}
+
+{% block nom %}
+    <div class="container" style="transform: translateY(25px);">
+        <div class="row">
+            <h1 class="col-sm-6 offset-sm-3 text-center text-white">{{ club.nom }}</h1>
+        </div>
+        <div class="row justify-content-center">
+            {% if  club.bde %}
+                <span class="badge badge-primary mr-1">BDE</span>
+            {% endif %}
+
+            {% if  club.bds %}
+                <span class="badge badge-warning mr-1">BDS</span>
+            {% endif %}
+
+            {% if  club.bda %}
+                <span class="badge badge-info">BDA</span>
+            {% endif %}
+        </div>
+        <div class="row justify-content-center mt-2 pb-2">
+            <div class="d-block">
+                {% if app.user %}
+                    {% include 'Club/suivreButton.html.twig' %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{%  block content %}
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="card">
+                <div class="card-body">
+
+                    {% if club.mail %}<p><strong>Mail : </strong> cne@ec-nantes.fr</p>{%  endif %}
+                    <h5>Bureau</h5>
+                    <p><strong>Président : </strong>
+                        <a href="{{ path("app.user",{'id':club.bureau.president.id}) }}" title="Voir la page">
+                            {{ club.bureau.president.prenom }} {{ club.bureau.president.nom }}
+                        </a></p>
+                    {% if  club.bureau.viceprezint %}
+                        <p><strong>Vice-président Int. : </strong>
+                            <a href="{{ path("app.user",{'id':club.bureau.viceprezint.id}) }}" title="Voir la page">
+                                {{ club.bureau.viceprezint.prenom }} {{ club.bureau.viceprezint.nom }}
+                            </a></p>
+                    {% endif %}
+                    {% if  club.bureau.viceprezext %}
+                        <p><strong>Vice-président Ext. : </strong>
+                            <a href="{{ path("app.user",{'id':club.bureau.viceprezext.id}) }}" title="Voir la page">
+                                {{ club.bureau.viceprezext.prenom }} {{ club.bureau.viceprezext.nom }}
+                            </a></p>
+                    {% endif %}
+                    {% if  club.bureau.secgen %}
+                        <p><strong>Secrétaire général : </strong>
+                            <a href="{{ path("app.user",{'id':club.bureau.secgen.id}) }}" title="Voir la page">
+                                {{ club.bureau.secgen.prenom }} {{ club.bureau.secgen.nom }}
+                            </a></p>
+                    {% endif %}
+                    {% if  club.bureau.tresorier %}
+                        <p><strong>Trésorier : </strong>
+                            <a href="{{ path("app.user",{'id':club.bureau.tresorier.id}) }}" title="Voir la page">
+                                {{ club.bureau.tresorier.prenom }} {{ club.bureau.tresorier.nom }}
+                            </a></p>
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+        <div class="col-sm-8">
+
+        </div>
+
+    </div>
+
+
+
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(document).ready(function () {
+            const suivre = $("#suivreclub");
+            $.ajax("{{ path("app.clubAjax.getsubmit",{"id":club.id}) }}",
+                {
+                    success : function (data) {
+                        data = $.parseJSON(data);
+                        if (data.suivi === 2) {
+                            suivre.html("{{ 'common.actions.unfollow'|trans }}");
+                            suivre.addClass("btn-danger");
+                            suivre.removeClass("btn-primary");
+                            suivre.removeClass("btn-secondary");
+                        } else if (data.suivi === 1) {
+                            suivre.html("{{ 'common.actions.asked'|trans }}");
+                            suivre.removeClass("btn-danger");
+                            suivre.removeClass("btn-primary");
+                            suivre.addClass("btn-secondary");
+                        } else {
+                            suivre.html("{{ 'common.actions.follow'|trans }}");
+                            suivre.removeClass("btn-danger");
+                            suivre.removeClass("btn-secondary");
+                            suivre.addClass("btn-primary");
+                        }
+                    }
+                });
+
+            suivre.on("click",function () {
+                $.ajax("{{ path('app.clubAjax.submit',{'id':club.id}) }}",
+                    {
+                        success : function (data) {
+                            data = $.parseJSON(data);
+                            if(data.suivi===2){
+                                suivre.html("{{ 'common.actions.unfollow'|trans }}");
+                                suivre.addClass("btn-danger");
+                                suivre.removeClass("btn-primary");
+                                suivre.removeClass("btn-secondary");
+                            }else if(data.suivi===1){
+                                suivre.html("{{ 'common.actions.asked'|trans }}");
+                                suivre.removeClass("btn-danger");
+                                suivre.removeClass("btn-primary");
+                                suivre.addClass("btn-secondary");
+                            }else{
+                                suivre.html("{{ 'common.actions.follow'|trans }}");
+                                suivre.removeClass("btn-danger");
+                                suivre.removeClass("btn-secondary");
+                                suivre.addClass("btn-primary");
+                            }
+                        },
+                        error : function (data) {
+                            
+                        }
+                    });
+            });
+        });
+    </script>
+{% endblock %}
