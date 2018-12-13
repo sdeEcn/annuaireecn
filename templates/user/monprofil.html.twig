@@ -1,18 +1,34 @@
-{% extends 'layout.html.twig' %}
+{% extends 'default/user.html.twig' %}
 
-{% block pageTitle %}
-    {{ user.nom }} {{ user.prenom }}
-{% endblock %}
 
-{% block pageHeader %}
-    {{ user.nom }} {{ user.prenom }}
+{% block scripts %}
 
-{% endblock %}
 
-{% block pageDescription %}
-    {{ 'page.default.description'|trans }}
-{% endblock %}
+            function submit(id){
+                var url="{{ path('app.clubAjax.submit',{'id':"id"}) }}";
+                url= url.replace('id',id);
+                $.ajax(url,
+                    {
+                        success : function (data) {
+                            data = $.parseJSON(data);
 
-{%  block content %}
-    {{ user.nom }} {{ user.prenom }}
+                            var name=".club"+id;
+                            $(".test").html(name);
+                            $(name).remove();
+
+                        },
+                        error : function (data) {
+
+                        }
+                    });
+            };
+
+            function setListen(){
+                $(".cancelinsc").on("click",function (event) {
+                    var id = $(this).data('club');
+                    submit(id);
+                });
+            }
+
+
 {% endblock %}

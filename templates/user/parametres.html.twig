@@ -20,11 +20,93 @@
                 position: static;
             }
         }
+        /* The switch - the box around the slider */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px !important;
+            height: 34px;
+        }
+
+        /* Hide default HTML checkbox */
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        /* The slider */
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked + .slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
     </style>
     {{ parent() }}
 {% endblock %}
 
 {% block content %}
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>{{ 'params.conf'|trans }}
+            <button type="button" class="btn btn-link infopw" data-toggle="tooltip" data-placement="right" title="{{ "params.infoconf"|trans }}">
+                <i class="fas fa-info-circle"></i>
+            </button>
+            </h3>
+        </div>
+    </div>
+    <div class="row col-sm-12 mt-3 mb-4">
+        <div class="form-group row col-sm-12 align-self-sm-center">
+            <label for="confidentialite" class=" col-sm-5 col-form-label col-lg-3">{{ 'params.confconsigne'|trans }} : </label>
+            <div class="col-sm-3" style="transform: translateY(5px);">
+                <label class="switch">
+                    <input type="checkbox" class="conf" {% if app.user.confidentialite %}checked{% endif %}>
+                    <span class="slider round"></span>
+                </label>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-sm-12">
         <h3>{{ 'params.passwordtitle'|trans }}
@@ -63,9 +145,9 @@
     {{ parent() }}
     <script>
         function checkpass(pass){
-            var lowerCaseLetters = new RegExp(/[a-z]/i);
-            var numbers = new RegExp(/[0-9]/i);
-            var upperCaseLetters = new RegExp(/[A-Z]/i);
+            let lowerCaseLetters = new RegExp(/[a-z]/i);
+            let numbers = new RegExp(/[0-9]/i);
+            let upperCaseLetters = new RegExp(/[A-Z]/i);
             return (lowerCaseLetters.test(pass) && numbers.test(pass) && upperCaseLetters.test(pass) && pass.length>8);
 
         }
@@ -74,26 +156,27 @@
             $('[data-toggle="tooltip"]').tooltip();
 
 
-            var good = false;
+            let good = false;
 
             $("#newpassword").keyup(function (){
                 good= checkpass($(".newpass").val());
-                $(".ok1").removeClass("d-none");
+                let ok1=$(".ok1");
+                ok1.removeClass("d-none");
 
                 if(good){
-                    $(".ok1").html('<i class="fas fa-check-circle" style="color:green;"></i>');
+                    ok1.html('<i class="fas fa-check-circle" style="color:green;"></i>');
                 }else{
-                    $(".ok1").html('<i class="fas fa-ban" style="color:red;"></i>');
+                    ok1.html('<i class="fas fa-ban" style="color:red;"></i>');
                 }
             });
 
             $("#formpw").on("submit",function (event) {
                 event.preventDefault();
-                var newpass = $(".newpass");
-                var alert1 = $('.alert-pass');
+                let newpass = $(".newpass");
+                let alert1 = $('.alert-pass');
                 if(checkpass(newpass.val()) ){
                     if( newpass.val()=== $(".confpass").val()) {
-                        var request = $.ajax({
+                        let request = $.ajax({
                             method: "POST",
                             url: '{{ path("app.user.ajaxpasswd") }}',
                             data: {
@@ -131,6 +214,16 @@
                 }
                 
             });
+
+            $('.conf').change(function () {
+                $.ajax("{{ path("app.user.ajaxconf") }}",{
+                    success: function (data) {
+                        data=$.parseJSON(data);
+                        $(".conf").prop('checked', data.conf);
+                    }
+                })
+
+            })
 
         });
 

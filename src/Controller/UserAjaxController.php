@@ -83,4 +83,28 @@ class UserAjaxController extends AbstractController
 
     }
 
+    /**
+     * @IsGranted("ROLE_USER")
+     * @Route("UserConnected/switchConf",name="app.user.ajaxconf",condition="request.isXmlHttpRequest()")
+     */
+    public function switchConf(){
+        $em = $this->getDoctrine()->getManager();
+        $user = $em->getRepository(Eleve::class)->find($this->getUser()->getId());
+        $user->switchConf();
+        $em->flush();
+
+        return new Response(json_encode(array("conf"=>$user->getConfidentialite())));
+    }
+
+    /**
+     * @Route("User/getAssos/{id}", name="app.user.assos",condition="request.isXmlHttpRequest()")
+     */
+    public function getAssos($id){
+        $em = $this->getDoctrine()->getRepository(Eleve::class);
+        $user=$em->find($id);
+
+        $view=$this->renderView("user/Clublist.html.twig",array("user"=>$user));
+        return new Response(json_encode(array("view"=>$view)));
+    }
+
 }

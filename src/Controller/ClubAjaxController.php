@@ -11,6 +11,7 @@ namespace App\Controller;
 
 use App\Entity\Club;
 use App\Entity\ClubEleves;
+use App\Entity\Eleve;
 use Doctrine\Common\Collections\ArrayCollection;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -76,4 +77,36 @@ class ClubAjaxController extends AbstractController
 
         return new Response(json_encode(array("suivi"=>$suivi,"nb"=>$nb)));
     }
+
+    /**
+     *
+     * @Route("/clubConnected/delete/{id}/{iduser}",name="app.club.ajaxdelete",condition="request.isXmlHttpRequest()")
+     * @IsGranted("EDIT",subject="club")
+     */
+    public function delete(Club $club,$iduser){
+        $em = $this->getDoctrine()->getManager();
+        $repo = $em->getRepository(Eleve::class);
+        $user=$repo->find($iduser);
+        $reponse="ERROR";
+
+        $membres = $club->getMembres();
+
+        if($club->getBureau()->getPresident()===$user){
+            $reponse="PREZ";
+        }else{
+            foreach ($membres as $membre){
+                if($membre->getEleve()===$user){
+                    $em->remove($membre);
+                    $em->flush();
+                    $reponse="SUCCES";
+                }
+            }
+        }
+        $nb=$club->getMembres()->count();
+
+        return new Response(json_encode(array('reponse'=>$reponse,"nb"=>$nb)));
+
+
+    }
+
 }

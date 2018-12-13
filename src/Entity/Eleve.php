@@ -41,6 +41,11 @@ class Eleve implements UserInterface
     private $mail;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    private $confidentialite=false;
+
+    /**
      * @ORM\Column(type="integer",nullable=true)
      */
     private $promo;
@@ -80,6 +85,11 @@ class Eleve implements UserInterface
      * @ORM\OneToMany(targetEntity="App\Entity\ClubEleves",mappedBy="eleve",fetch="EXTRA_LAZY")
      */
     private $clubs;
+
+    /**
+     * @ORM\Column(type="string",length=100,nullable=True)
+     */
+    private $liste;
 
     /**
      * @ORM\Column(type="json")
@@ -394,4 +404,44 @@ class Eleve implements UserInterface
         );
         return $encoded;
     }
+
+    /**
+     * @return string
+     */
+    public function getListe()
+    {
+        return $this->liste;
+    }
+
+    /**
+     * @param string $liste
+     */
+    public function setListe(string $liste): void
+    {
+        $this->liste = $liste;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getConfidentialite()
+    {
+        return $this->confidentialite;
+    }
+
+    /**
+     * @param boolean $confidentialite
+     */
+    public function setConfidentialite($confidentialite): void
+    {
+        $this->confidentialite = $confidentialite;
+    }
+
+    public function switchConf(){
+        $this->confidentialite=!$this->confidentialite;
+    }
+
+
+
+
 }

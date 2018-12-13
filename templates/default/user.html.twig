@@ -1,23 +1,90 @@
-{% extends 'layout.html.twig' %}
+{% extends 'layoutProfil.html.twig' %}
 
-{% block pageTitle %}
-    {{ user.nom }} {{ user.prenom }}
+{% block title %}
+    {{ user.prenom }} {{ user.nom }}
 {% endblock %}
 
-{% block pageHeader %}
-    {{ user.nom }} {{ user.prenom }}
-
-{% endblock %}
-
-{% block pageDescription %}
-    {{ 'page.default.description'|trans }}
+{% block nom %}
+    <div class="container-fluid bg-secondary">
+        <div class="container" style="transform: translateY(25px);">
+            <div class="row">
+                <h1 class="col-sm-6 offset-sm-3 text-center text-white">{{ user.prenom }} {{ user.nom }}</h1>
+            </div>
+            <div class="row justify-content-center">
+                <!--Si tjrs dans l'école -->
+                <span class="badge badge-info">Etudiant</span>
+                <!--Sinon --
+                <span class="badge badge-info">Diplomé</span-->
+            </div>
+            <div class="row justify-content-center mt-2 pb-2">
+                <div class="d-block">
+            {% if app.user %}
+                {% if app.user!=user %}
+                            {% include 'user/suivreButton.html.twig' %}
+                {% endif %}
+            {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 {%  block content %}
-    {{ user.nom }}<br/>
-    {% if app.user %}
-        {% include 'user/suivreButton.html.twig' %}
-    {% endif %}
+     <div class="row">
+      <div class="col-md-4 md-3">
+        <div class="card">
+          <div class="card-body">
+            <h2><span class="fas fa-info-circle"></span> Détails : </h2>
+              {% if (not user.confidentialite) or app.user.id==user.id %}
+            <p><strong>Mail : </strong><a href="mailto:{{ user.mail }}">{{ user.mail }}</a></p>
+            {% if user.promo %}
+                <p><strong>Promo : </strong>{{ user.promo }}</p>
+              {% endif %}
+              {% if user.option2 %}
+            <p><strong>Option EI2 : </strong>{{ user.option2.nom }}</p>
+              {% endif %}
+              {% if user.option3 %}
+            <p><strong>Option EI3 : </strong>{{ user.option3.nom }}</p>
+              {% endif %}
+              {% if user.liste %}
+            <p><strong>Liste : </strong>{{ user.liste }}</p>
+              {% endif %}
+                  {% else %}
+
+                  <div class="col-md-12 card text-center align-content-center bg-secondary text-white pt-5 pb-5 lead">
+                      {{ "user.confidentialite"|trans }}.
+                  </div>
+              {% endif %}
+
+          </div>
+        </div>
+
+      </div>
+
+         <div class="col-md-8 mt-3 container-fluid mb-5">
+
+        <div class="row pl-2 associations">
+
+        </div>
+
+             <div class="row pl-2 mt-3 ">
+                         <h2 class="col-12">Personnes Suivies
+                           <span class="badge badge-secondary membres" style="font-size: medium;">Nb</span>
+                         </h2>
+                         <div class="contentCard col-12 row">
+                           <div class="col-md-6 col-lg-4 mt-2">
+                             <div class="card">
+                               <div class="card-body">
+                                 <h5 class="card-title">elevePrenom1 eleveNom1</h5>
+                                 <a href="#" class="card-link">Voir le profil</a>
+                               </div>
+                             </div>
+                           </div>
+                         </div>
+                       </div>
+         </div>
+     </div>
+
 {% endblock %}
 
 {% block javascripts %}
@@ -25,6 +92,22 @@
     <script>
         $(document).ready(function () {
             const suivre = $("#suivreUser");
+            {% block scripts %}
+            {% endblock %}
+
+            function getAssos(userId){
+                url = "{{ path("app.user.assos",{'id':'id'}) }}";
+                url=url.replace('id',userId);
+             $.ajax(url,{
+                 success: function (data) {
+                     data= $.parseJSON(data);
+                     $(".associations").html(data.view);
+                     setListen();
+                 }
+             });
+            }
+
+            getAssos({{ user.id }});
 
             suivre.on("click", function () {
                 $.ajax("{{ path('app.userAjax.submit',{'id':user.id}) }}",
@@ -57,8 +140,6 @@
                     }
                 }
             });
-
-
 
         });
     </script>

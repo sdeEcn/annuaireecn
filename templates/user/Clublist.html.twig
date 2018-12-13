@@ -1,0 +1,47 @@
+    <h2 class="col-12">Associations
+        <span class="badge badge-secondary membres" style="font-size: medium;">{{ user.clubs|length }}</span>
+    </h2>
+    <div class="contentCard col-12 row">
+        {% for club in user.clubs %}
+            {% if club.status!=2 %}
+                <div class="col-md-6 col-lg-4 mt-2 club{{ club.club.id }}">
+                    <div class="card">
+                        <div class="card-body">
+                            <img class="card-img-top" src="logo.png">
+                            <h5 class="card-title">{{ club.club.nom }}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">{{ club.relation }}
+                                <span class="badge badge-danger">{{ "user.attente"|trans }}</span>
+                            </h6>
+
+
+                            <a href="{{ path("app.club.default",{'id': club.club.id, 'nom': club.club.nom }) }}"
+                               class="card-link ">{{ "user.asso"|trans }}</a>
+                            {% if app.user.id==user.id %}
+                                {% include "user/CancelButton.html.twig" %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+        {% for club in user.clubs %}
+            {% if club.status==2 %}
+                <div class="col-md-6 col-lg-4 mt-2 club{{ club.id }}">
+                    <div class="card">
+                        <div class="card-body">
+                            <img class="card-img-top" src="logo.png">
+                            <h5 class="card-title">{{ club.club.nom }}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">{{ club.relation }}
+                                {% if user in club.club.admin %}
+                                    <span class="badge badge-secondary">{{ "user.admin"|trans }}</span>
+                                {% endif %}
+                            </h6>
+                            <a href="{{ path("app.club.default",{'id': club.club.id, 'nom': club.club.nom }) }}"
+                               class="card-link">{{ "user.asso"|trans }}</a>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>

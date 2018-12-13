@@ -38,6 +38,7 @@
             <div class="card">
                 <div class="card-body">
                     <h2><span class="fas fa-info-circle"></span>  {{ club.nom }} : </h2>
+
                     {% if club.mail %}<p><strong>Mail : </strong><a href="mailto:{{ club.mail }}">{{ club.mail }}</a></p>{%  endif %}
                     <h5>Bureau</h5>
                     <p><strong>{{ "page.president"|trans }} : </strong>
@@ -90,10 +91,15 @@
                     {% if app.user %}
                         {% for membres in club.membres %}
                             {% if membres.eleve.id != app.user.id %}
-                                    <div class="col-md-6 col-lg-4 mt-2">
+                                    <div class="col-md-6 col-lg-4 mt-2" data-delete="{{ membres.eleve.id }}">
                                         <div class="card">
-                                            <div class="card-body">
+                                            <div class="card-body">{% if is_granted('EDIT',club) %}
+                                                    <button type="button" class="close" aria-label="Close" data-user="{{ membres.eleve.id }}">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                {% endif %}
                                                 <h5 class="card-title">{{ membres.eleve.prenom }} {{ membres.eleve.nom }}</h5>
+
                                                 <h6 class="card-subtitle mb-2 text-muted">{{ membres.relation }}</h6>
                                                 <a href="{{ path('app.user',{'id':membres.eleve.id}) }}" class="card-link">Voir le profil</a>
                                             </div>
@@ -113,10 +119,16 @@
                         {% endfor %}
                         {% else %}
                             {% for membres in club.membres %}
-                                    <div class="col-md-6 col-lg-4 mt-2">
+                                    <div class="col-md-6 col-lg-4 mt-2" data-delete="{{ membres.eleve.id }}">
                                         <div class="card">
                                             <div class="card-body">
+                                                {% if is_granted('EDIT',club) %}
+                                                    <button type="button" class="close" aria-label="Close" data-user="{{ membres.eleve.id }}">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                {% endif %}
                                                 <h5 class="card-title">{{ membres.eleve.prenom }} {{ membres.eleve.nom }}</h5>
+
                                                 <h6 class="card-subtitle mb-2 text-muted">{{ membres.relation }}</h6>
                                                 <a href="{{ path('app.user',{'id':membres.eleve.id}) }}" class="card-link">Voir le profil</a>
                                             </div>
@@ -160,50 +172,27 @@
                 "                                        </div>\n" +
                 "                                    </div>";
 
-
-            $.ajax("{{ path("app.clubAjax.getsubmit",{"id":club.id}) }}",
-                {
-                    success : function (data) {
-                        data = $.parseJSON(data);
-                        if (data.suivi === 2) {
-                            suivre.html("{{ 'common.actions.unfollow'|trans }}");
-                            suivre.addClass("btn-danger");
-                            suivre.removeClass("btn-primary");
-                            suivre.removeClass("btn-secondary");
-
-                        } else if (data.suivi === 1) {
-                            suivre.html("{{ 'common.actions.asked'|trans }}");
-                            suivre.removeClass("btn-danger");
-                            suivre.removeClass("btn-primary");
-                            suivre.addClass("btn-secondary");
-                        } else {
-                            suivre.html("{{ 'common.actions.follow'|trans }}");
-                            suivre.removeClass("btn-danger");
-                            suivre.removeClass("btn-secondary");
-                            suivre.addClass("btn-primary");
-
-
-                        }
-                    }
-                });
-
-            suivre.on("click",function () {
+            let suivi =0;
+            function submit(){
                 $.ajax("{{ path('app.clubAjax.submit',{'id':club.id}) }}",
                     {
                         success : function (data) {
                             data = $.parseJSON(data);
                             if(data.suivi===2){
+                                suivi=data.suivi;
                                 suivre.html("{{ 'common.actions.unfollow'|trans }}");
                                 suivre.addClass("btn-danger");
                                 suivre.removeClass("btn-primary");
                                 suivre.removeClass("btn-secondary");
                                 $(".contentCard").prepend(text);
                             }else if(data.suivi===1){
+                                suivi=data.suivi;
                                 suivre.html("{{ 'common.actions.asked'|trans }}");
                                 suivre.removeClass("btn-danger");
                                 suivre.removeClass("btn-primary");
                                 suivre.addClass("btn-secondary");
                             }else{
+                                suivi=0;
                                 suivre.html("{{ 'common.actions.follow'|trans }}");
                                 suivre.removeClass("btn-danger");
                                 suivre.removeClass("btn-secondary");
@@ -213,10 +202,115 @@
                             nb.html(data.nb);
                         },
                         error : function (data) {
-                            
+
                         }
                     });
+            };
+
+            $.ajax("{{ path("app.clubAjax.getsubmit",{"id":club.id}) }}",
+                {
+                    success : function (data) {
+                        data = $.parseJSON(data);
+                        if (data.suivi === 2) {
+                            suivi=data.suivi;
+                            suivre.html("{{ 'common.actions.unfollow'|trans }}");
+                            suivre.addClass("btn-danger");
+                            suivre.removeClass("btn-primary");
+                            suivre.removeClass("btn-secondary");
+
+                        } else if (data.suivi === 1) {
+                            suivi=data.suivi;
+                            suivre.html("{{ 'common.actions.asked'|trans }}");
+                            suivre.removeClass("btn-danger");
+                            suivre.removeClass("btn-primary");
+                            suivre.addClass("btn-secondary");
+                        } else {
+                            suivi=0;
+                            suivre.html("{{ 'common.actions.follow'|trans }}");
+                            suivre.removeClass("btn-danger");
+                            suivre.removeClass("btn-secondary");
+                            suivre.addClass("btn-primary");
+
+
+                        }
+                    }
+                });
+            const modal=$(".modal");
+            const closemodal=$('.closemodal');
+            const savemodal=$('.save');
+
+
+
+            suivre.on("click",function () {
+                if (suivi!==2){
+                    submit();
+                }else{
+                    closemodal.off();
+                    savemodal.off();
+                    $(".modal-title").html("{{ "action.desabonner"|trans }}");
+                    $('.modal-body').html("{{ "action.desabotext"|trans }}");
+
+                    closemodal.html("{{ "action.cancel"|trans }}");
+                    savemodal.html("{{ "action.desabonner"|trans }}");
+                    modal.modal("show");
+                    closemodal.on('click',function () {
+                        modal.modal('hide');
+                    });
+
+                    savemodal.on("click",function () {
+                        modal.modal('hide');
+                        submit();
+                    });
+
+                }
+
             });
+
+            {% if is_granted('EDIT',club) %}
+            const close = $(".close");
+
+            function deleteuser(id){
+                let url = "{{ path("app.club.ajaxdelete",{'id':club.id,'iduser':'id'}) }}";
+                url=url.replace('id',id);
+                $.ajax(url,
+                    {
+                        success : function (data) {
+                            data = $.parseJSON(data);
+                            switch(data.reponse){
+                                case "SUCCES":
+                                    var name='[data-delete="'+id+'"]' ;
+                                    $(name).remove();
+                                    $(".membres").html(data.nb);
+                                    break;
+                                case "ERROR":
+                                    break;
+                                case "PREZ":
+                                    break;
+                            }
+                        }
+                    });
+            }
+
+            close.on('click',function (event) {
+                closemodal.off();
+                savemodal.off();
+                $(".modal-title").html("{{ "action.delete"|trans }}");
+                $('.modal-body').html("{{ "action.deletetext"|trans }}");
+                var id=$(this).data("user");
+                closemodal.html("{{ "action.cancel"|trans }}");
+                savemodal.html("{{ "action.delete"|trans }}");
+                modal.modal("show");
+                closemodal.on('click',function () {
+                    modal.modal('hide');
+                });
+
+                savemodal.on("click",function () {
+                    deleteuser(id);
+                    modal.modal('hide');
+                });
+            });
+            {% endif %}
+
         });
         {% endif %}
     </script>

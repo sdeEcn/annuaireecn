@@ -23,6 +23,9 @@ params:
     password: Mot de passe
     passwordtitle: Changer de mot de passe
     success: Le mot de passe à été changé avec succès!
+    conf: 'Confidentialité'
+    infoconf: "Rendre votre profil confidentiel rendra vos informations invisibles aux autres utilisateurs. Seuls les clubs auquels vous appartenez s'afficheront sur votre profil."
+    confconsigne: "Activer le mode confidentiel"
     errors:
         pw: Vous avez entré le mauvais mot de passe!
         conf: Le mot de passe ne correspond pas à sa confirmation!
@@ -67,4 +70,14 @@ label:
 
 action:
     sign_in: "Connectez-vous"
+    desabonner: "Se désabonner"
+    desabotext: "Êtes-vous sûr de vouloir vous désabonner de ce club?"
+    cancel : Annuler
+    delete: Supprimer membre
+    deletetext: "Vous êtes sur le point de supprimer cet utilisateur. Êtes-vous sûr de vouloir continuer?"
 
+user:
+    confidentialite: "Cet utilisateur a activé le mode confidentiel. Ses données sont inaccessible"
+    admin: "Admin."
+    asso: "Voir l'association"
+    attente: "Demandé"

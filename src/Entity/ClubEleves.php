@@ -124,4 +124,13 @@ class ClubEleves
         $this->setStatus(2);
     }
 
+    /**
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+
 }
