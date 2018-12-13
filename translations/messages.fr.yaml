@@ -49,6 +49,14 @@ page:
     footer:
         copyright: Copyrigth Cloud des Élèves
         allRightsReserved: Tous droits réservés
+    description : Description
+    president: "Président"
+    viceprezint : "Vice-président Int."
+    viceprezext : "Vice-président Ext."
+    secgen: "Secrétaire Général"
+    trez: "Trésorier"
+    membre: Membres
+    confidentielle: "Cette page est confidentielle, vous ne pouvez accéder à son contenu sans y être membre"
 
 title:
     login: 'Connexion'
@@ -59,3 +67,4 @@ label:
 
 action:
     sign_in: "Connectez-vous"
+

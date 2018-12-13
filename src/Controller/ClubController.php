@@ -25,6 +25,14 @@ class ClubController extends AbstractController
         $clubem=$em->getRepository(Club::class);
         $club = $clubem->find($id);
 
-        return $this->render("default/club.html.twig",array("club"=>$club));
+        $nb = $club->getMembres()->count();
+
+        foreach ($club->getMembres() as $membre){
+            if($membre->getStatus()!=2){
+                $nb--;
+            }
+        }
+
+        return $this->render("default/club.html.twig",array("club"=>$club,"nb"=>$nb));
     }
 }

@@ -43,30 +43,37 @@ class ClubAjaxController extends AbstractController
 
     /**
      * @IsGranted("ROLE_USER")
-     * @Route("/UserConnected/submitClub/{id}",name="app.clubAjax.submit", condition="request.isXmlHttpRequest()")
+     * @Route("/clubConnected/submitClub/{id}",name="app.clubAjax.submit", condition="request.isXmlHttpRequest()")
      */
     public function SubmitToClub($id):Response{
         $em= $this->getDoctrine()->getManager();
         $clubrepo =$em ->getRepository(Club::class);
         $club=$clubrepo->find($id);
         $membres = $club->getMembres();
+        $nb= $membres->count();
         $suivi = new ArrayCollection();
         $finish=false;
         foreach ($membres as $membre){
+            if($membre->getStatus()!=2){
+                $nb--;
+            }
             if($membre->getEleve()==$this->getUser()){
                 $em->remove($membre);
                 $finish=true;
                 $suivi=0;
+                $nb = $nb-1;
             }
         }
         if(!$finish){
             $relation = new ClubEleves($this->getUser(),$club);
             $em->persist($relation);
             $suivi = $relation->getStatus();
+            $nb = $nb+1;
         }
+
 
         $em->flush();
 
-        return new Response(json_encode(array("suivi"=>$suivi)));
+        return new Response(json_encode(array("suivi"=>$suivi,"nb"=>$nb)));
     }
 }

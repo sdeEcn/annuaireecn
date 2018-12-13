@@ -34,36 +34,36 @@
 
 {%  block content %}
     <div class="row">
-        <div class="col-sm-4">
+        <div class="col-md-4 md-3">
             <div class="card">
                 <div class="card-body">
-
-                    {% if club.mail %}<p><strong>Mail : </strong> cne@ec-nantes.fr</p>{%  endif %}
+                    <h2><span class="fas fa-info-circle"></span>  {{ club.nom }} : </h2>
+                    {% if club.mail %}<p><strong>Mail : </strong><a href="mailto:{{ club.mail }}">{{ club.mail }}</a></p>{%  endif %}
                     <h5>Bureau</h5>
-                    <p><strong>Président : </strong>
+                    <p><strong>{{ "page.president"|trans }} : </strong>
                         <a href="{{ path("app.user",{'id':club.bureau.president.id}) }}" title="Voir la page">
                             {{ club.bureau.president.prenom }} {{ club.bureau.president.nom }}
                         </a></p>
                     {% if  club.bureau.viceprezint %}
-                        <p><strong>Vice-président Int. : </strong>
+                        <p><strong>{{ "page.viceprezint"|trans }} : </strong>
                             <a href="{{ path("app.user",{'id':club.bureau.viceprezint.id}) }}" title="Voir la page">
                                 {{ club.bureau.viceprezint.prenom }} {{ club.bureau.viceprezint.nom }}
                             </a></p>
                     {% endif %}
                     {% if  club.bureau.viceprezext %}
-                        <p><strong>Vice-président Ext. : </strong>
+                        <p><strong>{{ "page.viceprezext"|trans }} : </strong>
                             <a href="{{ path("app.user",{'id':club.bureau.viceprezext.id}) }}" title="Voir la page">
                                 {{ club.bureau.viceprezext.prenom }} {{ club.bureau.viceprezext.nom }}
                             </a></p>
                     {% endif %}
                     {% if  club.bureau.secgen %}
-                        <p><strong>Secrétaire général : </strong>
+                        <p><strong>{{ "page.secgen"|trans }} : </strong>
                             <a href="{{ path("app.user",{'id':club.bureau.secgen.id}) }}" title="Voir la page">
                                 {{ club.bureau.secgen.prenom }} {{ club.bureau.secgen.nom }}
                             </a></p>
                     {% endif %}
                     {% if  club.bureau.tresorier %}
-                        <p><strong>Trésorier : </strong>
+                        <p><strong>{{ "page.trez"|trans }} : </strong>
                             <a href="{{ path("app.user",{'id':club.bureau.tresorier.id}) }}" title="Voir la page">
                                 {{ club.bureau.tresorier.prenom }} {{ club.bureau.tresorier.nom }}
                             </a></p>
@@ -72,9 +72,68 @@
             </div>
 
         </div>
-        <div class="col-sm-8">
+
+        <div class="col-md-8 mt-3 container-fluid mb-5">
+            {% if not club.confidentialite %}
+            <div class="row pl-2">
+                <h2 class="col-12">{{ "page.description"|trans }}</h2>
+
+                <p class="col-12 ml-2 mr-2 lead text-justify">{{ club.description }}</p>
+                <hr class="col-10">
+            </div>
+
+                <div class="row pl-2 ">
+                    <h2 class="col-12">{{ "page.membre"|trans }}
+                        <span class="badge badge-secondary membres" style="font-size: medium;">{{ nb }}</span>
+                    </h2>
+                    <div class="contentCard col-12 row">
+                    {% if app.user %}
+                        {% for membres in club.membres %}
+                            {% if membres.eleve.id != app.user.id %}
+                                    <div class="col-md-6 col-lg-4 mt-2">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h5 class="card-title">{{ membres.eleve.prenom }} {{ membres.eleve.nom }}</h5>
+                                                <h6 class="card-subtitle mb-2 text-muted">{{ membres.relation }}</h6>
+                                                <a href="{{ path('app.user',{'id':membres.eleve.id}) }}" class="card-link">Voir le profil</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="col-md-6 col-lg-4 mt-2 usercard">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h5 class="card-title">{{ membres.eleve.prenom }} {{ membres.eleve.nom }}</h5>
+                                                <h6 class="card-subtitle mb-2 text-muted">{{ membres.relation }}</h6>
+                                                <a href="{{ path('app.user',{'id':membres.eleve.id}) }}" class="card-link">Voir le profil</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                            {% endif %}
+                        {% endfor %}
+                        {% else %}
+                            {% for membres in club.membres %}
+                                    <div class="col-md-6 col-lg-4 mt-2">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h5 class="card-title">{{ membres.eleve.prenom }} {{ membres.eleve.nom }}</h5>
+                                                <h6 class="card-subtitle mb-2 text-muted">{{ membres.relation }}</h6>
+                                                <a href="{{ path('app.user',{'id':membres.eleve.id}) }}" class="card-link">Voir le profil</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                            {% endfor %}
+                    {% endif %}
+                    </div>
+                </div>
+                {% else %}
+                <div class="col-md-12 card text-center align-content-center bg-secondary text-white pt-5 pb-5 lead">
+                    {{ "page.confidentielle"|trans }}.
+                </div>
+            {% endif %}
 
         </div>
+
 
     </div>
 
@@ -86,8 +145,22 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
+        {% if app.user %}
         $(document).ready(function () {
             const suivre = $("#suivreclub");
+            const nb = $(".membres");
+            const user = $(".usercard");
+            const text = "<div class=\"col-md-6 col-lg-4 mt-2 usercard\">\n" +
+                "                                        <div class=\"card\">\n" +
+                "                                            <div class=\"card-body\">\n" +
+                "                                                <h5 class=\"card-title\">{{ app.user.prenom }} {{ app.user.nom }}</h5>\n" +
+                "                                                <h6 class=\"card-subtitle mb-2 text-muted\">Membre</h6>\n" +
+                "                                                <a href=\"{{ path('app.user',{'id':app.user.id}) }}\" class=\"card-link\">Voir le profil</a>\n" +
+                "                                            </div>\n" +
+                "                                        </div>\n" +
+                "                                    </div>";
+
+
             $.ajax("{{ path("app.clubAjax.getsubmit",{"id":club.id}) }}",
                 {
                     success : function (data) {
@@ -97,6 +170,7 @@
                             suivre.addClass("btn-danger");
                             suivre.removeClass("btn-primary");
                             suivre.removeClass("btn-secondary");
+
                         } else if (data.suivi === 1) {
                             suivre.html("{{ 'common.actions.asked'|trans }}");
                             suivre.removeClass("btn-danger");
@@ -107,6 +181,8 @@
                             suivre.removeClass("btn-danger");
                             suivre.removeClass("btn-secondary");
                             suivre.addClass("btn-primary");
+
+
                         }
                     }
                 });
@@ -121,6 +197,7 @@
                                 suivre.addClass("btn-danger");
                                 suivre.removeClass("btn-primary");
                                 suivre.removeClass("btn-secondary");
+                                $(".contentCard").prepend(text);
                             }else if(data.suivi===1){
                                 suivre.html("{{ 'common.actions.asked'|trans }}");
                                 suivre.removeClass("btn-danger");
@@ -131,7 +208,9 @@
                                 suivre.removeClass("btn-danger");
                                 suivre.removeClass("btn-secondary");
                                 suivre.addClass("btn-primary");
+                                $(".usercard").remove();
                             }
+                            nb.html(data.nb);
                         },
                         error : function (data) {
                             
@@ -139,5 +218,6 @@
                     });
             });
         });
+        {% endif %}
     </script>
 {% endblock %}
