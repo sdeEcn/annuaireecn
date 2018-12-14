@@ -7,8 +7,16 @@
                 <div class="col-md-6 col-lg-4 mt-2 club{{ club.club.id }}">
                     <div class="card">
                         <div class="card-body">
-                            <img class="card-img-top" src="logo.png">
-                            <h5 class="card-title">{{ club.club.nom }}</h5>
+                            <div class="container">
+                                <div class="d-flex justify-content-center h-100">
+                                    <div class="image_outer_container">
+                                        <div class="image_inner_container">
+                                            <img class="card-img-top" src="/build/images/profil.png">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <h5 class="card-title mt-2">{{ club.club.nom }}</h5>
                             <h6 class="card-subtitle mb-2 text-muted">{{ club.relation }}
                                 <span class="badge badge-danger">{{ "user.attente"|trans }}</span>
                             </h6>
@@ -29,8 +37,16 @@
                 <div class="col-md-6 col-lg-4 mt-2 club{{ club.id }}">
                     <div class="card">
                         <div class="card-body">
-                            <img class="card-img-top" src="logo.png">
-                            <h5 class="card-title">{{ club.club.nom }}</h5>
+                            <div class="container" >
+                                <div class="d-flex justify-content-center h-100">
+                                    <div class="image_outer_container">
+                                        <div class="image_inner_container">
+                                         <img class="card-img-top" src="/build/images/profil.png">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <h5 class="card-title mt-2">{{ club.club.nom }}</h5>
                             <h6 class="card-subtitle mb-2 text-muted">{{ club.relation }}
                                 {% if user in club.club.admin %}
                                     <span class="badge badge-secondary">{{ "user.admin"|trans }}</span>

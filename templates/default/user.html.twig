@@ -63,11 +63,11 @@
 
          <div class="col-md-8 mt-3 container-fluid mb-5">
 
-        <div class="row pl-2 associations">
+        <div class="row associations justify-content-around">
 
         </div>
 
-             <div class="row pl-2 mt-3 ">
+             <div class="row justify-content-around mt-3 ">
                          <h2 class="col-12">Personnes Suivies
                            <span class="badge badge-secondary membres" style="font-size: medium;">Nb</span>
                          </h2>
@@ -117,11 +117,11 @@
                             if(data.suivi){
                                 suivre.html("{{ 'common.actions.unfollow'|trans }}");
                                 suivre.addClass("btn-danger");
-                                suivre.removeClass("btn-default");
+                                suivre.removeClass("btn-primary");
                             }else{
                                 suivre.html("{{ 'common.actions.follow'|trans }}");
                                 suivre.removeClass("btn-danger");
-                                suivre.addClass("btn-default");
+                                suivre.addClass("btn-primary");
                             }
                         }
                     });
@@ -132,7 +132,7 @@
                     data = $.parseJSON(data);
                     if(!data.suivi) {
                         suivre.html("{{ 'common.actions.follow'|trans }}");
-                        suivre.addClass("btn-default");
+                        suivre.addClass("btn-primary");
                     }else{
                         suivre.html("{{ 'common.actions.unfollow'|trans }}");
                         suivre.addClass("btn-danger");

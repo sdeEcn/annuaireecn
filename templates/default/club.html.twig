@@ -1,5 +1,6 @@
 {% extends 'layoutProfil.html.twig' %}
 
+
 {% block title %}
     {{ club.nom }}
 {% endblock %}
@@ -25,7 +26,9 @@
         <div class="row justify-content-center mt-2 pb-2">
             <div class="d-block">
                 {% if app.user %}
+                    {% if app.user !=club.bureau.president %}
                     {% include 'Club/suivreButton.html.twig' %}
+                        {% endif %}
                 {% endif %}
             </div>
         </div>
@@ -75,30 +78,36 @@
         </div>
 
         <div class="col-md-8 mt-3 container-fluid mb-5">
-            {% if not club.confidentialite %}
-            <div class="row pl-2">
+            {% if (not club.confidentialite) or is_granted("MEMBRE",club) %}
+            <div class="row ">
                 <h2 class="col-12">{{ "page.description"|trans }}</h2>
 
                 <p class="col-12 ml-2 mr-2 lead text-justify">{{ club.description }}</p>
                 <hr class="col-10">
             </div>
 
-                <div class="row pl-2 ">
+                <div class="row justify-content-around ">
                     <h2 class="col-12">{{ "page.membre"|trans }}
                         <span class="badge badge-secondary membres" style="font-size: medium;">{{ nb }}</span>
                     </h2>
                     <div class="contentCard col-12 row">
                     {% if app.user %}
                         {% for membres in club.membres %}
-                            {% if membres.eleve.id != app.user.id %}
+                            {% if membres.eleve.id != app.user.id and membres.status==2 %}
                                     <div class="col-md-6 col-lg-4 mt-2" data-delete="{{ membres.eleve.id }}">
                                         <div class="card">
-                                            <div class="card-body">{% if is_granted('EDIT',club) %}
-                                                    <button type="button" class="close" aria-label="Close" data-user="{{ membres.eleve.id }}">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
+                                            <div class="card-body">
+                                                {% if is_granted('EDIT',club) %}
+                                                    {% if membres.eleve != club.bureau.president %}
+                                                        <button type="button" class="close" aria-label="Close" data-user="{{ membres.eleve.id }}">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    {% endif %}
                                                 {% endif %}
                                                 <h5 class="card-title">{{ membres.eleve.prenom }} {{ membres.eleve.nom }}</h5>
+                                                {% if membres.eleve == club.bureau.president %}
+                                                    <span class="badge badge-success mb-2">{{ "page.president"|trans }}</span>
+                                                {% endif %}
 
                                                 <h6 class="card-subtitle mb-2 text-muted">{{ membres.relation }}</h6>
                                                 <a href="{{ path('app.user',{'id':membres.eleve.id}) }}" class="card-link">Voir le profil</a>
@@ -106,34 +115,40 @@
                                         </div>
                                     </div>
                                 {% else %}
+                                    {% if membres.status==2 %}
                                     <div class="col-md-6 col-lg-4 mt-2 usercard">
                                         <div class="card">
                                             <div class="card-body">
                                                 <h5 class="card-title">{{ membres.eleve.prenom }} {{ membres.eleve.nom }}</h5>
+                                                {% if membres.eleve == club.bureau.president %}
+                                                    <span class="badge badge-success mb-2">{{ "page.president"|trans }}</span>
+                                                {% endif %}
                                                 <h6 class="card-subtitle mb-2 text-muted">{{ membres.relation }}</h6>
+
                                                 <a href="{{ path('app.user',{'id':membres.eleve.id}) }}" class="card-link">Voir le profil</a>
                                             </div>
                                         </div>
                                     </div>
+                                    {% endif %}
                             {% endif %}
                         {% endfor %}
                         {% else %}
                             {% for membres in club.membres %}
+                                {% if membres.status==2 %}
                                     <div class="col-md-6 col-lg-4 mt-2" data-delete="{{ membres.eleve.id }}">
                                         <div class="card">
                                             <div class="card-body">
-                                                {% if is_granted('EDIT',club) %}
-                                                    <button type="button" class="close" aria-label="Close" data-user="{{ membres.eleve.id }}">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                {% endif %}
-                                                <h5 class="card-title">{{ membres.eleve.prenom }} {{ membres.eleve.nom }}</h5>
 
+                                                <h5 class="card-title">{{ membres.eleve.prenom }} {{ membres.eleve.nom }}</h5>
+                                                {% if membres.eleve == club.bureau.president %}
+                                                    <span class="badge badge-success mb-2">{{ "page.president"|trans }}</span>
+                                                {% endif %}
                                                 <h6 class="card-subtitle mb-2 text-muted">{{ membres.relation }}</h6>
                                                 <a href="{{ path('app.user',{'id':membres.eleve.id}) }}" class="card-link">Voir le profil</a>
                                             </div>
                                         </div>
                                     </div>
+                                {% endif %}
                             {% endfor %}
                     {% endif %}
                     </div>

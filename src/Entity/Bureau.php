@@ -28,31 +28,31 @@ class Bureau
     private $club;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Eleve")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Eleve")
      * @ORM\JoinColumn(name="president_id",referencedColumnName="id")
      */
     private $president;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Eleve")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Eleve")
      * @ORM\JoinColumn(name="viceprezint_id",referencedColumnName="id",nullable=true)
      */
     private $viceprezint;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Eleve")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Eleve")
      * @ORM\JoinColumn(name="viceprezext_id",referencedColumnName="id",nullable=true)
      */
     private $viceprezext;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Eleve")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Eleve")
      * @ORM\JoinColumn(name="secgen_id",referencedColumnName="id",nullable=true)
      */
     private $secgen;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Eleve")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Eleve")
      * @ORM\JoinColumn(name="tresorier_id",referencedColumnName="id",nullable=true)
      */
     private $tresorier;

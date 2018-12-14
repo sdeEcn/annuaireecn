@@ -51,29 +51,33 @@ class ClubAjaxController extends AbstractController
         $clubrepo =$em ->getRepository(Club::class);
         $club=$clubrepo->find($id);
         $membres = $club->getMembres();
-        $nb= $membres->count();
         $suivi = new ArrayCollection();
         $finish=false;
         foreach ($membres as $membre){
             if($membre->getStatus()!=2){
-                $nb--;
             }
             if($membre->getEleve()==$this->getUser()){
                 $em->remove($membre);
                 $finish=true;
                 $suivi=0;
-                $nb = $nb-1;
             }
         }
         if(!$finish){
             $relation = new ClubEleves($this->getUser(),$club);
             $em->persist($relation);
             $suivi = $relation->getStatus();
-            $nb = $nb+1;
+
         }
 
 
         $em->flush();
+        $nb=0;
+        foreach ($club->getMembres() as $membre){
+            if($membre->getStatus()==2){
+                $nb++;
+            }
+        }
+
 
         return new Response(json_encode(array("suivi"=>$suivi,"nb"=>$nb)));
     }
