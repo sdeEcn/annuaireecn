@@ -18,93 +18,115 @@
             </div>
             <div class="row justify-content-center mt-2 pb-2">
                 <div class="d-block">
-            {% if app.user %}
-                {% if app.user!=user %}
+                    {% if app.user %}
+                        {% if app.user!=user %}
                             {% include 'user/suivreButton.html.twig' %}
-                {% endif %}
-            {% endif %}
+                        {% endif %}
+                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
 {% endblock %}
 
-{%  block content %}
-     <div class="row">
-      <div class="col-md-4 md-3">
-        <div class="card">
-          <div class="card-body">
-            <h2><span class="fas fa-info-circle"></span> Détails : </h2>
-              {% if (not user.confidentialite) or app.user.id==user.id %}
-            <p><strong>Mail : </strong><a href="mailto:{{ user.mail }}">{{ user.mail }}</a></p>
-            {% if user.promo %}
-                <p><strong>Promo : </strong>{{ user.promo }}</p>
-              {% endif %}
-              {% if user.option2 %}
-            <p><strong>Option EI2 : </strong>{{ user.option2.nom }}</p>
-              {% endif %}
-              {% if user.option3 %}
-            <p><strong>Option EI3 : </strong>{{ user.option3.nom }}</p>
-              {% endif %}
-              {% if user.liste %}
-            <p><strong>Liste : </strong>{{ user.liste }}</p>
-              {% endif %}
-                  {% else %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-4 md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h2><span class="fas fa-info-circle"></span> Détails : {% block modifinfo %}{% endblock %}</h2>
+                    <div class="details">
+                        {% if (not user.confidentialite) or app.user.id==user.id %}
+                            <p><strong>{{ "user.mail"|trans }} : </strong><a
+                                        href="mailto:{{ user.mail }}">{{ user.mail }}</a></p>
+                            {% if user.mail1 %}
+                                <p><strong>{{ "user.mail1"|trans }} </strong><a
+                                            href="mailto:{{ user.mail1 }}">{{ user.mail1 }}</a></p>
+                            {% endif %}
 
-                  <div class="col-md-12 card text-center align-content-center bg-secondary text-white pt-5 pb-5 lead">
-                      {{ "user.confidentialite"|trans }}.
-                  </div>
-              {% endif %}
+                            {% if user.phone %}
+                                <p><strong>Téléphone : </strong><a
+                                            href="tel:{{ user.phone|phone_number_format('NATIONAL') }}">
+                                        {{ user.phone|phone_number_format('NATIONAL') }}</a></p>
+                            {% endif %}
+                            {% if user.promo %}
+                                <p><strong>Promo : </strong>{{ user.promo }}</p>
+                            {% endif %}
+                            {% if user.option2 %}
+                                <p><strong>Option EI2 : </strong>{{ user.option2.nom }}</p>
+                            {% endif %}
+                            {% if user.option3 %}
+                                <p><strong>Option EI3 : </strong>{{ user.option3.nom }}</p>
+                            {% endif %}
+                            {% if user.liste %}
+                                <p><strong>Liste : </strong>{{ user.liste }}</p>
+                            {% endif %}
+                        {% else %}
 
-          </div>
+                            <div class="col-md-12 card text-center align-content-center bg-secondary text-white pt-5 pb-5 lead">
+                                {{ "user.confidentialite"|trans }}.
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
         </div>
 
-      </div>
+        <div class="col-md-8 mt-3 container-fluid mb-5">
 
-         <div class="col-md-8 mt-3 container-fluid mb-5">
+            <div class="row associations justify-content-around">
 
-        <div class="row associations justify-content-around">
+            </div>
 
+            <div class="row justify-content-around mt-3 ">
+                <h2 class="col-12">Personnes Suivies
+                    <span class="badge badge-secondary membres"
+                          style="font-size: medium;">{{ user.mesSuivis|length }}</span>
+                </h2>
+                <div class="contentCard col-12 row">
+                    {% for membre in user.mesSuivis %}
+
+                        <div class="col-md-6 col-lg-4 mt-2 user{{ membre.id }}">
+                            <div class="card">
+                                <div class="card-body">
+                                    {% block close %}
+                                    {% endblock %}
+                                    <h5 class="card-title">{{ membre.prenom }} {{ membre.nom }}</h5>
+                                    <a href="{{ path("app.user",{'id':membre.id}) }}"
+                                       class="card-link">{{ "user.profil"|trans }}</a>
+                                </div>
+                            </div>
+                        </div>
+
+                    {% endfor %}
+                </div>
+            </div>
         </div>
-
-             <div class="row justify-content-around mt-3 ">
-                         <h2 class="col-12">Personnes Suivies
-                           <span class="badge badge-secondary membres" style="font-size: medium;">Nb</span>
-                         </h2>
-                         <div class="contentCard col-12 row">
-                           <div class="col-md-6 col-lg-4 mt-2">
-                             <div class="card">
-                               <div class="card-body">
-                                 <h5 class="card-title">elevePrenom1 eleveNom1</h5>
-                                 <a href="#" class="card-link">Voir le profil</a>
-                               </div>
-                             </div>
-                           </div>
-                         </div>
-                       </div>
-         </div>
-     </div>
+    </div>
 
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
+    {% block script1 %}
+    {% endblock %}
     <script>
         $(document).ready(function () {
             const suivre = $("#suivreUser");
             {% block scripts %}
             {% endblock %}
 
-            function getAssos(userId){
+            function getAssos(userId) {
                 url = "{{ path("app.user.assos",{'id':'id'}) }}";
-                url=url.replace('id',userId);
-             $.ajax(url,{
-                 success: function (data) {
-                     data= $.parseJSON(data);
-                     $(".associations").html(data.view);
-                     setListen();
-                 }
-             });
+                url = url.replace('id', userId);
+                $.ajax(url, {
+                    success: function (data) {
+                        data = $.parseJSON(data);
+                        $(".associations").html(data.view);
+                        setListen();
+                    }
+                });
             }
 
             getAssos({{ user.id }});
@@ -112,13 +134,13 @@
             suivre.on("click", function () {
                 $.ajax("{{ path('app.userAjax.submit',{'id':user.id}) }}",
                     {
-                        success : function (data) {
+                        success: function (data) {
                             data = $.parseJSON(data);
-                            if(data.suivi){
+                            if (data.suivi) {
                                 suivre.html("{{ 'common.actions.unfollow'|trans }}");
                                 suivre.addClass("btn-danger");
                                 suivre.removeClass("btn-primary");
-                            }else{
+                            } else {
                                 suivre.html("{{ 'common.actions.follow'|trans }}");
                                 suivre.removeClass("btn-danger");
                                 suivre.addClass("btn-primary");
@@ -127,13 +149,13 @@
                     });
             });
 
-            $.ajax("{{ path("app.userAjax.getsubmit",{'id':user.id}) }}",{
-                success : function (data) {
+            $.ajax("{{ path("app.userAjax.getsubmit",{'id':user.id}) }}", {
+                success: function (data) {
                     data = $.parseJSON(data);
-                    if(!data.suivi) {
+                    if (!data.suivi) {
                         suivre.html("{{ 'common.actions.follow'|trans }}");
                         suivre.addClass("btn-primary");
-                    }else{
+                    } else {
                         suivre.html("{{ 'common.actions.unfollow'|trans }}");
                         suivre.addClass("btn-danger");
 
@@ -141,6 +163,47 @@
                 }
             });
 
+            const close = $(".close");
+
+            function deleteuser(id) {
+                let url = "{{ path("app.userAjax.submit",{'id':'id'}) }}";
+                url = url.replace('id', id);
+                $.ajax(url,
+                    {
+                        success: function (data) {
+                            data = $.parseJSON(data);
+                            if (!data.suivi) {
+                                let classe = ".user" + id;
+                                $(classe).remove();
+                                $(".membres").html(data.nb);
+                            }
+                        }
+                    });
+            }
+
+            const modal = $(".modal");
+            const closemodal = $('.closemodal');
+            const savemodal = $('.save');
+
+            close.on('click', function (event) {
+                closemodal.off();
+                savemodal.off();
+                $(".modal-title").html("{{ "common.actions.unfollow"|trans }}");
+                $('.modal-body').html("{{ "user.unfollow"|trans }}");
+                var id = $(this).data("user");
+                closemodal.html("{{ "action.cancel"|trans }}");
+                savemodal.html("{{ "common.actions.unfollow"|trans }}");
+                modal.modal("show");
+                closemodal.on('click', function () {
+                    modal.modal('hide');
+                });
+
+                savemodal.on("click", function () {
+                    deleteuser(id);
+                    modal.modal('hide');
+                });
+            });
         });
     </script>
+
 {% endblock %}

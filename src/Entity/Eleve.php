@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Misd\PhoneNumberBundle\Validator\Constraints\PhoneNumber as AssertPhoneNumber;
 
 
 /**
@@ -41,9 +42,22 @@ class Eleve implements UserInterface
     private $mail;
 
     /**
+     * @ORM\Column(type="string",nullable=true)
+     * @Assert\Email()
+     */
+    private $mail1;
+
+    /**
+     * @ORM\Column(type="phone_number",nullable=true)
+     * @AssertPhoneNumber
+     *
+     */
+    private $phone;
+
+    /**
      * @ORM\Column(type="boolean")
      */
-    private $confidentialite=false;
+    private $confidentialite = false;
 
     /**
      * @ORM\Column(type="integer",nullable=true)
@@ -69,7 +83,6 @@ class Eleve implements UserInterface
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Eleve",mappedBy="messuiveurs")
-
      */
     private $messuivis;
 
@@ -104,12 +117,12 @@ class Eleve implements UserInterface
 
     public function __construct(string $nom, string $prenom, string $mail)
     {
-        $this->nom=$nom;
-        $this->prenom=$prenom;
-        $this->mail=$mail;
-        $this->clubs=new ArrayCollection();
-        $this->messuivis=new ArrayCollection();
-        $this->messuiveurs=new ArrayCollection();
+        $this->nom = $nom;
+        $this->prenom = $prenom;
+        $this->mail = $mail;
+        $this->clubs = new ArrayCollection();
+        $this->messuivis = new ArrayCollection();
+        $this->messuiveurs = new ArrayCollection();
 
     }
 
@@ -120,7 +133,6 @@ class Eleve implements UserInterface
     {
         return $this->id;
     }
-
 
 
     /**
@@ -198,7 +210,7 @@ class Eleve implements UserInterface
     /**
      * @param Photo $pdprofil
      */
-    public function setPdprofil(Photo $pdprofil): void
+    public function setPdprofil(?Photo $pdprofil): void
     {
         $this->pdprofil = $pdprofil;
     }
@@ -214,7 +226,7 @@ class Eleve implements UserInterface
     /**
      * @param Options $option2
      */
-    public function setOption2(Options $option2): void
+    public function setOption2(?Options $option2): void
     {
         $this->option2 = $option2;
     }
@@ -230,7 +242,7 @@ class Eleve implements UserInterface
     /**
      * @param Options $option3
      */
-    public function setOption3(Options $option3): void
+    public function setOption3(?Options $option3): void
     {
         $this->option3 = $option3;
     }
@@ -251,11 +263,13 @@ class Eleve implements UserInterface
         $this->clubs = $clubs;
     }
 
-    public function addClubs(ClubEleves $club){
+    public function addClubs(ClubEleves $club)
+    {
         $this->clubs->add($club);
     }
 
-    public function removeClubs(ClubEleves $club){
+    public function removeClubs(ClubEleves $club)
+    {
         $this->clubs->removeElement($club);
     }
 
@@ -287,15 +301,17 @@ class Eleve implements UserInterface
         return array_unique($roles);
     }
 
-    public function addRoles(string $string){
-        if(!array_search($string,$this->roles)){
-            $this->roles[]=$string;
+    public function addRoles(string $string)
+    {
+        if (!array_search($string, $this->roles)) {
+            $this->roles[] = $string;
         }
     }
 
-    public function removeRole(string $role){
-        $i = array_search($role,$this->roles);
-        if($i){
+    public function removeRole(string $role)
+    {
+        $i = array_search($role, $this->roles);
+        if ($i) {
             unset($this->roles[$i]);
             return true;
         }
@@ -348,20 +364,19 @@ class Eleve implements UserInterface
         $this->messuiveurs = $messuiveurs;
     }
 
-    public function addSuiveur(Eleve $suivi){
+    public function addSuiveur(Eleve $suivi)
+    {
         $this->messuiveurs->add($suivi);
     }
 
-    public function removeSuiveur(Eleve $suivi){
+    public function removeSuiveur(Eleve $suivi)
+    {
         $this->messuiveurs->removeElement($suivi);
     }
 
 
-
-
-
-
-    public function checkPassword($pwd, &$errors) {
+    public function checkPassword($pwd, &$errors)
+    {
         $errors_init = $errors;
 
         if (strlen($pwd) < 8) {
@@ -374,11 +389,9 @@ class Eleve implements UserInterface
 
         if (!preg_match("#[a-zA-Z]+#", $pwd)) {
             $errors[] = "Le mot de passe doit contenir au moins une lettre!";
-        }
-        else if (!preg_match("#[a-z]+#", $pwd)) {
+        } else if (!preg_match("#[a-z]+#", $pwd)) {
             $errors[] = "Le mot de passe doit contenir au moins une lettre minuscule!";
-        }
-        else if (!preg_match("#[A-Z]+#", $pwd)) {
+        } else if (!preg_match("#[A-Z]+#", $pwd)) {
             $errors[] = "Le mot de passe doit contenir au moins une lettre majuscule!";
         }
 
@@ -386,8 +399,7 @@ class Eleve implements UserInterface
     }
 
 
-
-    public function encodePassword(UserPasswordEncoderInterface $passwordEncoder):string
+    public function encodePassword(UserPasswordEncoderInterface $passwordEncoder): string
     {
         $encoded = $passwordEncoder->encodePassword(
             $this,
@@ -396,7 +408,7 @@ class Eleve implements UserInterface
         return $encoded;
     }
 
-    public function encodePassword1(UserPasswordEncoderInterface $passwordEncoder, string $test):string
+    public function encodePassword1(UserPasswordEncoderInterface $passwordEncoder, string $test): string
     {
         $encoded = $passwordEncoder->encodePassword(
             $this,
@@ -416,7 +428,7 @@ class Eleve implements UserInterface
     /**
      * @param string $liste
      */
-    public function setListe(string $liste): void
+    public function setListe(?string $liste): void
     {
         $this->liste = $liste;
     }
@@ -437,10 +449,42 @@ class Eleve implements UserInterface
         $this->confidentialite = $confidentialite;
     }
 
-    public function switchConf(){
-        $this->confidentialite=!$this->confidentialite;
+    public function switchConf()
+    {
+        $this->confidentialite = !$this->confidentialite;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getPhone()
+    {
+        return $this->phone;
+    }
+
+    /**
+     * @param mixed $phone
+     */
+    public function setPhone($phone): void
+    {
+        $this->phone = $phone;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMail1()
+    {
+        return $this->mail1;
+    }
+
+    /**
+     * @param mixed $mail1
+     */
+    public function setMail1($mail1): void
+    {
+        $this->mail1 = $mail1;
+    }
 
 
 

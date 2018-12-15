@@ -1,34 +1,145 @@
 {% extends 'default/user.html.twig' %}
 
+{% block close %}
+    <button type="button" class="close" aria-label="Close" data-user="{{ membre.id }}">
+        <span aria-hidden="true">&times;</span>
+    </button>
+{% endblock %}
+
+{% block modifinfo %}
+    <button type="button" class="float-right btn btn-default infos"
+            style="font-size: 0.7em; padding: 5px;line-height: initial; color: white;" aria-label="Modifier Infos"
+            data-user="{{ app.user.id }}">
+        <span><i class="fas fa-cog"></i></span>
+    </button>
+{% endblock %}
 
 {% block scripts %}
 
 
-            function submit(id){
-                var url="{{ path('app.clubAjax.submit',{'id':"id"}) }}";
-                url= url.replace('id',id);
-                $.ajax(url,
-                    {
-                        success : function (data) {
-                            data = $.parseJSON(data);
 
-                            var name=".club"+id;
-                            $(".test").html(name);
-                            $(name).remove();
+    function submitA(id){
+    var url="{{ path('app.clubAjax.submit',{'id':"id"}) }}";
+    url= url.replace('id',id);
+    $.ajax(url,
+    {
+    success : function (data) {
+    data = $.parseJSON(data);
 
-                        },
-                        error : function (data) {
+    var name=".club"+id;
+    $(".test").html(name);
+    $(name).remove();
 
-                        }
-                    });
-            };
+    },
+    error : function (data) {
 
-            function setListen(){
-                $(".cancelinsc").on("click",function (event) {
-                    var id = $(this).data('club');
-                    submit(id);
-                });
+    }
+    });
+    };
+
+    function setListen(){
+    $(".cancelinsc").on("click",function (event) {
+    var id = $(this).data('club');
+    submitA(id);
+    });
+    }
+
+
+{% endblock %}
+
+{% block script1 %}
+    <script>
+        $(document).ready(function () {
+            let info = $('.infos');
+            const closemodal = $('.closemodal');
+            const savemodal = $('.save');
+            const body = $('.modal-body');
+            const modal = $(".modal");
+            const title = $(".modal-title");
+
+
+            function inflateform(title1, save, close) {
+                title.html(title1);
+                savemodal.html(save);
+                closemodal.html(close);
+            }
+
+            function inflateModalContent(form1) {
+                body.html(form1);
+            }
+
+            function unableButton() {
+                closemodal.off();
+                savemodal.off();
             }
 
 
+
+            function closeModal() {
+                updateInfo();
+                closemodal.html();
+                savemodal.html();
+                title.html();
+                modal.modal("hide");
+            }
+
+            function succes(data) {
+                unableButton();
+                data = $.parseJSON(data);
+                if (data.message === "OK") {
+                    console.log("OK");
+                    inflateModalContent(data.form);
+                    inflateform("{{ "user.modif"|trans }}", "{{ "action.valid"|trans }}", "{{ "action.cancel"|trans }}");
+                    modal.modal("show");
+                    closemodal.on('click', function () {
+                        closeModal();
+                    });
+                    savemodal.on("click", function () {
+                        console.log("OK");
+
+                        $(".formInfo").on("submit", function (e) {
+                            console.log("envoyé");
+                            e.preventDefault();
+                            $form = $(".formInfo");
+                            $.ajax("{{ path("app.user.form") }}", {
+                                data: $form.serialize(),
+                                type: "POST",
+                                success: function (data1) {
+                                    succes(data1);
+                                }
+                            });
+                        });
+
+                        $(".formInfo").submit();
+                    });
+                } else if (data.message === "SUBMIT") {
+                    closeModal();
+                }
+            }
+
+            function modif() {
+                $.ajax("{{ path("app.user.form") }}", {
+                    success: function (data) {
+                        succes(data);
+                    }
+                });
+            }
+
+            function updateInfo() {
+                $.ajax("{{ path("app.userAjax.infos") }}", {
+                    success: function (data) {
+                        data = $.parseJSON(data);
+                        $(".details").html(data.view);
+
+                    }
+                });
+            }
+
+            info.on("click", function () {
+                modif();
+            });
+
+
+        });
+    </script>
 {% endblock %}

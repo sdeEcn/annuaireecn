@@ -12,7 +12,8 @@ security:
             ROLE_ADMIN:       ROLE_USER
             ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
 
-
+    access_control:
+        - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: '%env(SECURE_SCHEME)%' }
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/

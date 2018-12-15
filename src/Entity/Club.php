@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 
 /**
@@ -29,27 +30,33 @@ class Club
     private $mail;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="string",length=255,nullable=True)
+     * @Assert\Url(message="L'URL '{{value}}' n'est pas valide!")
      */
-    private $bde=false;
+    private $site;
+
     /**
      * @ORM\Column(type="boolean")
      */
-    private $bds=false;
+    private $bde = false;
     /**
      * @ORM\Column(type="boolean")
      */
-    private $bda=false;
+    private $bds = false;
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $bda = false;
 
     /**
      * @ORM\Column(type="text")
      */
-    private $description="";
+    private $description = "";
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $confidentialite=false; //true = visible par ses membres lors de la recherche (pas d'accès au contenu du club)
+    private $confidentialite = false; //true = visible par ses membres lors de la recherche (pas d'accès au contenu du club)
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Bureau",inversedBy="club")
@@ -70,19 +77,19 @@ class Club
     private $membres;
 
 
-
     public function __construct(string $nom, bool $confidentialite)
     {
-        $this->nom=$nom;
-        $this->confidentialite=$confidentialite;
-        $this->admin= new ArrayCollection();
-        $this->membres=new  ArrayCollection();
+        $this->nom = $nom;
+        $this->confidentialite = $confidentialite;
+        $this->admin = new ArrayCollection();
+        $this->membres = new  ArrayCollection();
     }
 
     /**
      * @return integer
      */
-    public function getId(){
+    public function getId()
+    {
         return $this->id;
     }
 
@@ -151,11 +158,13 @@ class Club
         $this->admin = $admin;
     }
 
-    public function addAdmin(Eleve $admin){
+    public function addAdmin(Eleve $admin)
+    {
         $this->admin->add($admin);
     }
 
-    public function removeAdmin(Eleve $admin){
+    public function removeAdmin(Eleve $admin)
+    {
         $this->admin->remove($admin);
     }
 
@@ -175,11 +184,13 @@ class Club
         $this->membres = $membres;
     }
 
-    public function addMembres(ClubEleves $eleve){
+    public function addMembres(ClubEleves $eleve)
+    {
         $this->membres->add($eleve);
     }
 
-    public function removeMembres(ClubEleves $eleve){
+    public function removeMembres(ClubEleves $eleve)
+    {
         $this->membres->remove($eleve);
     }
 
@@ -259,6 +270,22 @@ class Club
     public function setMail($mail): void
     {
         $this->mail = $mail;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSite()
+    {
+        return $this->site;
+    }
+
+    /**
+     * @param mixed $site
+     */
+    public function setSite($site): void
+    {
+        $this->site = $site;
     }
 
 

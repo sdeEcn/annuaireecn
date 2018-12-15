@@ -75,9 +75,19 @@ action:
     cancel : Annuler
     delete: Supprimer membre
     deletetext: "Vous êtes sur le point de supprimer cet utilisateur. Êtes-vous sûr de vouloir continuer?"
+    valid: "Valider"
 
 user:
-    confidentialite: "Cet utilisateur a activé le mode confidentiel. Ses données sont inaccessible"
+    confidentialite: "Cet utilisateur a activé le mode confidentiel. Ses données sont inaccessibles"
     admin: "Admin."
     asso: "Voir l'association"
     attente: "Demandé"
+    profil: "Voir le profil"
+    unfollow: "Voulez-vous supprimer cet utilisateur de votre liste de personnes suivies?"
+    mail: "Adresse e-mail"
+    mail1: "Adresse e-mail de contact :"
+    phone: "Téléphone"
+    option2 : "Option EI2"
+    option3 : "Option EI3"
+    liste: "Liste"
+    modif: "Modifier les infos :"

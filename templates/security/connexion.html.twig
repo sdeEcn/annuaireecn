@@ -3,8 +3,15 @@
 {% block stylesheet %}
     <style type="text/css">
         .footer{
+            width: 100%;
             position: absolute;
+            left: 0px;
             bottom: 0px;
+            text-align: center;
+        }
+
+        .hide-footer {
+            display: none;
         }
     </style>
     {{ parent() }}
@@ -44,4 +51,17 @@
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+    <script>
+    $('input').focus(function() {
+       $('footer').addClass('hide-footer');
+    });
+
+    $('input').focusout(function() {
+       $('footer').removeClass('hide-footer');
+    });
+    </script>
 {% endblock %}

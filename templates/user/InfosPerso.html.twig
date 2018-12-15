@@ -1,0 +1,29 @@
+{% if (not user.confidentialite) or app.user.id==user.id %}
+    <p><strong>{{ "user.mail"|trans }} : </strong><a href="mailto:{{ user.mail }}">{{ user.mail }}</a></p>
+    {% if user.mail1 %}
+        <p><strong>{{ "user.mail1"|trans }} </strong><a href="mailto:{{ user.mail1 }}">{{ user.mail1 }}</a> </p>
+    {% endif %}
+
+    {% if user.phone %}
+        <p><strong>Téléphone : </strong><a
+                    href="tel:{{ user.phone|phone_number_format('NATIONAL') }}">
+                {{ user.phone|phone_number_format('NATIONAL') }}</a></p>
+    {% endif %}
+    {% if user.promo %}
+        <p><strong>Promo : </strong>{{ user.promo }}</p>
+    {% endif %}
+    {% if user.option2 %}
+        <p><strong>Option EI2 : </strong>{{ user.option2.nom }}</p>
+    {% endif %}
+    {% if user.option3 %}
+        <p><strong>Option EI3 : </strong>{{ user.option3.nom }}</p>
+    {% endif %}
+    {% if user.liste %}
+        <p><strong>Liste : </strong>{{ user.liste }}</p>
+    {% endif %}
+{% else %}
+
+    <div class="col-md-12 card text-center align-content-center bg-secondary text-white pt-5 pb-5 lead">
+        {{ "user.confidentialite"|trans }}.
+    </div>
+{% endif %}
