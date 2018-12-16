@@ -12,6 +12,7 @@ namespace App\Controller;
 
 
 use App\Entity\Club;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -26,13 +27,15 @@ class ClubController extends AbstractController
         $club = $clubem->find($id);
 
         $nb = $club->getMembres()->count();
+        $demandes = new ArrayCollection();
 
         foreach ($club->getMembres() as $membre){
             if($membre->getStatus()!=2){
                 $nb--;
+                $demandes->add($membre);
             }
         }
 
-        return $this->render("default/club.html.twig",array("club"=>$club,"nb"=>$nb));
+        return $this->render("default/club.html.twig",array("club"=>$club,"nb"=>$nb,"demandes"=>$demandes));
     }
 }

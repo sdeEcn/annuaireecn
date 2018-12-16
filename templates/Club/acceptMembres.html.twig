@@ -1,0 +1,16 @@
+<div class="demandesdiv">
+<h2>{{ "club.demandes"|trans}}   <span class="badge badge-secondary nbdemandes" style="font-size: medium;">{{ demandes|length }}</span></h2>
+        <div class="list-group listDemandes col-sm-12 mb-3" style="overflow-y: scroll;">
+            {% for demande in demandes %}
+                <li class="user{{ demande.eleve.id }} list-group-item demandeitem" data-id="{{ demande.eleve.id }}">
+                    <a href="{{ path("app.user", {"id":demande.eleve.id}) }}">
+                        <h3 class="d-inline">{{ demande.eleve.prenom }} {{ demande.eleve.nom }}</h3>
+                    </a>
+                    <div class="d-inline float-right">
+                    <button class="add btn btn-primary" data-id="{{ demande.eleve.id }}">Accepter</button>
+                    <button class="delete btn btn-danger" data-id="{{ demande.eleve.id }}">Supprimer</button>
+                    </div>
+                </li>
+            {% endfor %}
+        </div>
+</div>

@@ -91,3 +91,6 @@ user:
     option3 : "Option EI3"
     liste: "Liste"
     modif: "Modifier les infos :"
+
+club:
+    demandes : "Demandes de connexions"

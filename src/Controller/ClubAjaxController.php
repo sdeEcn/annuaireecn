@@ -26,44 +26,45 @@ class ClubAjaxController extends AbstractController
      * @IsGranted("ROLE_USER")
      * @Route("/ClubConnected/getSubmit/{id}",name="app.clubAjax.getsubmit", condition="request.isXmlHttpRequest()")
      */
-    public function getSubmitStatus($id):Response
+    public function getSubmitStatus($id): Response
     {
-        $em= $this->getDoctrine()->getRepository(Club::class);
-        $club=$em->find($id);
+        $em = $this->getDoctrine()->getRepository(Club::class);
+        $club = $em->find($id);
         $membres = $club->getMembres();
         $suivi = new ArrayCollection();
-        $bool=0;
-        foreach ($membres as $membre){
-            if($membre->getEleve()==$this->getUser()){
-                $bool=$membre->getStatus();
+        $bool = 0;
+        foreach ($membres as $membre) {
+            if ($membre->getEleve() == $this->getUser()) {
+                $bool = $membre->getStatus();
             }
         }
 
-        return new Response(json_encode(array("suivi"=>$bool)));
+        return new Response(json_encode(array("suivi" => $bool)));
     }
 
     /**
      * @IsGranted("ROLE_USER")
      * @Route("/clubConnected/submitClub/{id}",name="app.clubAjax.submit", condition="request.isXmlHttpRequest()")
      */
-    public function SubmitToClub($id):Response{
-        $em= $this->getDoctrine()->getManager();
-        $clubrepo =$em ->getRepository(Club::class);
-        $club=$clubrepo->find($id);
+    public function SubmitToClub($id): Response
+    {
+        $em = $this->getDoctrine()->getManager();
+        $clubrepo = $em->getRepository(Club::class);
+        $club = $clubrepo->find($id);
         $membres = $club->getMembres();
         $suivi = new ArrayCollection();
-        $finish=false;
-        foreach ($membres as $membre){
-            if($membre->getStatus()!=2){
+        $finish = false;
+        foreach ($membres as $membre) {
+            if ($membre->getStatus() != 2) {
             }
-            if($membre->getEleve()==$this->getUser()){
+            if ($membre->getEleve() == $this->getUser()) {
                 $em->remove($membre);
-                $finish=true;
-                $suivi=0;
+                $finish = true;
+                $suivi = 0;
             }
         }
-        if(!$finish){
-            $relation = new ClubEleves($this->getUser(),$club);
+        if (!$finish) {
+            $relation = new ClubEleves($this->getUser(), $club);
             $em->persist($relation);
             $suivi = $relation->getStatus();
 
@@ -71,15 +72,15 @@ class ClubAjaxController extends AbstractController
 
 
         $em->flush();
-        $nb=0;
-        foreach ($club->getMembres() as $membre){
-            if($membre->getStatus()==2){
+        $nb = 0;
+        foreach ($club->getMembres() as $membre) {
+            if ($membre->getStatus() == 2) {
                 $nb++;
             }
         }
 
 
-        return new Response(json_encode(array("suivi"=>$suivi,"nb"=>$nb)));
+        return new Response(json_encode(array("suivi" => $suivi, "nb" => $nb)));
     }
 
     /**
@@ -87,30 +88,91 @@ class ClubAjaxController extends AbstractController
      * @Route("/clubConnected/delete/{id}/{iduser}",name="app.club.ajaxdelete",condition="request.isXmlHttpRequest()")
      * @IsGranted("EDIT",subject="club")
      */
-    public function delete(Club $club,$iduser){
+    public function delete(Club $club, $iduser)
+    {
         $em = $this->getDoctrine()->getManager();
         $repo = $em->getRepository(Eleve::class);
-        $user=$repo->find($iduser);
-        $reponse="ERROR";
+        $user = $repo->find($iduser);
+        $reponse = "ERROR";
 
         $membres = $club->getMembres();
 
-        if($club->getBureau()->getPresident()===$user){
-            $reponse="PREZ";
-        }else{
-            foreach ($membres as $membre){
-                if($membre->getEleve()===$user){
+        if ($club->getBureau()->getPresident() === $user) {
+            $reponse = "PREZ";
+        } else {
+            foreach ($membres as $membre) {
+                if ($membre->getEleve() === $user) {
                     $em->remove($membre);
                     $em->flush();
-                    $reponse="SUCCES";
+                    $reponse = "SUCCES";
                 }
             }
         }
-        $nb=$club->getMembres()->count();
+        $nb = $club->getMembres()->count();
 
-        return new Response(json_encode(array('reponse'=>$reponse,"nb"=>$nb)));
-
-
+        return new Response(json_encode(array('reponse' => $reponse, "nb" => $nb)));
     }
 
+    /**
+     *
+     * @Route("/clubAjax/{id}",name="app.club.ajaxAccept")
+     * @IsGranted("EDIT",subject="club")
+     */
+    public function getDemandeMembre(Club $club)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $membres = $club->getMembres();
+        $demandes = new ArrayCollection();
+        foreach ($membres as $membre) {
+            if ($membre->getStatus() == 1) {
+                $demandes->add($membre);
+            }
+        }
+
+        return $this->render("Club/acceptMembres.html.twig", array("club" => $club, "demandes" => $demandes));
+    }
+
+    /**
+     * @Route("/clubAjax/confirm/{status}/{id}/{userid}",name="app.club.ajaxconfirm")
+     * @IsGranted("EDIT",subject="club")
+     */
+    public function confirmDemande($status, Club $club, $userid)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $user = $em->getRepository(Eleve::class)->find($userid);
+        $message="ERROR";
+        $relations = $club->getMembres();
+        if ($status == 2) {
+            foreach ($relations as $relation) {
+                if ($relation->getEleve()->getId() == $userid) {
+                    $relation->setStatus(2);
+                    $message = "OK";
+                }
+            }
+        } elseif ($status == 0) {
+            foreach ($relations as $relation) {
+                if ($relation->getEleve()->getId() == $userid) {
+                    $em->remove($relation);
+                    $message = "DELETE";
+                }
+            }
+        }
+
+        $nb=0;
+        $nbdemandes= 0;
+        foreach ($relations as $relation){
+            if($relation->getStatus() ==2){
+                $nb++;
+            }elseif ($relation->getStatus() ==1){
+                $nbdemandes++;
+            }
+        }
+
+
+        $em->flush();
+
+        return new Response(json_encode(array("message"=>$message,"nom"=>$user->getNom(),
+            "prenom"=>$user->getPrenom(),"nb"=>$nb,"nbdemandes"=>$nbdemandes)));
+
+    }
 }

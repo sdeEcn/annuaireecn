@@ -27,22 +27,23 @@
             <div class="d-block">
                 {% if app.user %}
                     {% if app.user !=club.bureau.president %}
-                    {% include 'Club/suivreButton.html.twig' %}
-                        {% endif %}
+                        {% include 'Club/suivreButton.html.twig' %}
+                    {% endif %}
                 {% endif %}
             </div>
         </div>
     </div>
 {% endblock %}
 
-{%  block content %}
+{% block content %}
     <div class="row">
         <div class="col-md-4 md-3">
             <div class="card">
                 <div class="card-body">
-                    <h2><span class="fas fa-info-circle"></span>  {{ club.nom }} : </h2>
+                    <h2><span class="fas fa-info-circle"></span> {{ club.nom }} : </h2>
 
-                    {% if club.mail %}<p><strong>Mail : </strong><a href="mailto:{{ club.mail }}">{{ club.mail }}</a></p>{%  endif %}
+                    {% if club.mail %}<p><strong>Mail : </strong><a href="mailto:{{ club.mail }}">{{ club.mail }}</a>
+                        </p>{% endif %}
                     <h5>Bureau</h5>
                     <p><strong>{{ "page.president"|trans }} : </strong>
                         <a href="{{ path("app.user",{'id':club.bureau.president.id}) }}" title="Voir la page">
@@ -79,27 +80,31 @@
 
         <div class="col-md-8 mt-3 container-fluid mb-5">
             {% if (not club.confidentialite) or is_granted("MEMBRE",club) %}
-            <div class="row ">
-                <h2 class="col-12">{{ "page.description"|trans }}</h2>
+                {% if is_granted("EDIT",club) and (demandes|length)>0 %}
+                    {% include "Club/acceptMembres.html.twig" %}
+                {% endif %}
+                <div class="row ">
+                    <h2 class="col-12">{{ "page.description"|trans }}</h2>
 
-                <p class="col-12 ml-2 mr-2 lead text-justify">{{ club.description }}</p>
-                <hr class="col-10">
-            </div>
+                    <p class="col-12 ml-2 mr-2 lead text-justify">{{ club.description }}</p>
+                    <hr class="col-10">
+                </div>
 
                 <div class="row justify-content-around ">
                     <h2 class="col-12">{{ "page.membre"|trans }}
-                        <span class="badge badge-secondary membres" style="font-size: medium;">{{ nb }}</span>
+                        <span class="badge badge-secondary nbmembres membres" style="font-size: medium;">{{ nb }}</span>
                     </h2>
-                    <div class="contentCard col-12 row">
-                    {% if app.user %}
-                        {% for membres in club.membres %}
-                            {% if membres.eleve.id != app.user.id and membres.status==2 %}
+                    <div class="contentCard membrescontent col-12 row">
+                        {% if app.user %}
+                            {% for membres in club.membres %}
+                                {% if membres.eleve.id != app.user.id and membres.status==2 %}
                                     <div class="col-md-6 col-lg-4 mt-2" data-delete="{{ membres.eleve.id }}">
                                         <div class="card">
                                             <div class="card-body">
                                                 {% if is_granted('EDIT',club) %}
                                                     {% if membres.eleve != club.bureau.president %}
-                                                        <button type="button" class="close" aria-label="Close" data-user="{{ membres.eleve.id }}">
+                                                        <button type="button" class="close" aria-label="Close"
+                                                                data-user="{{ membres.eleve.id }}">
                                                             <span aria-hidden="true">&times;</span>
                                                         </button>
                                                     {% endif %}
@@ -110,28 +115,30 @@
                                                 {% endif %}
 
                                                 <h6 class="card-subtitle mb-2 text-muted">{{ membres.relation }}</h6>
-                                                <a href="{{ path('app.user',{'id':membres.eleve.id}) }}" class="card-link">Voir le profil</a>
+                                                <a href="{{ path('app.user',{'id':membres.eleve.id}) }}"
+                                                   class="card-link">Voir le profil</a>
                                             </div>
                                         </div>
                                     </div>
                                 {% else %}
                                     {% if membres.status==2 %}
-                                    <div class="col-md-6 col-lg-4 mt-2 usercard">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <h5 class="card-title">{{ membres.eleve.prenom }} {{ membres.eleve.nom }}</h5>
-                                                {% if membres.eleve == club.bureau.president %}
-                                                    <span class="badge badge-success mb-2">{{ "page.president"|trans }}</span>
-                                                {% endif %}
-                                                <h6 class="card-subtitle mb-2 text-muted">{{ membres.relation }}</h6>
+                                        <div class="col-md-6 col-lg-4 mt-2 usercard">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <h5 class="card-title">{{ membres.eleve.prenom }} {{ membres.eleve.nom }}</h5>
+                                                    {% if membres.eleve == club.bureau.president %}
+                                                        <span class="badge badge-success mb-2">{{ "page.president"|trans }}</span>
+                                                    {% endif %}
+                                                    <h6 class="card-subtitle mb-2 text-muted">{{ membres.relation }}</h6>
 
-                                                <a href="{{ path('app.user',{'id':membres.eleve.id}) }}" class="card-link">Voir le profil</a>
+                                                    <a href="{{ path('app.user',{'id':membres.eleve.id}) }}"
+                                                       class="card-link">Voir le profil</a>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
                                     {% endif %}
-                            {% endif %}
-                        {% endfor %}
+                                {% endif %}
+                            {% endfor %}
                         {% else %}
                             {% for membres in club.membres %}
                                 {% if membres.status==2 %}
@@ -144,16 +151,17 @@
                                                     <span class="badge badge-success mb-2">{{ "page.president"|trans }}</span>
                                                 {% endif %}
                                                 <h6 class="card-subtitle mb-2 text-muted">{{ membres.relation }}</h6>
-                                                <a href="{{ path('app.user',{'id':membres.eleve.id}) }}" class="card-link">Voir le profil</a>
+                                                <a href="{{ path('app.user',{'id':membres.eleve.id}) }}"
+                                                   class="card-link">Voir le profil</a>
                                             </div>
                                         </div>
                                     </div>
                                 {% endif %}
                             {% endfor %}
-                    {% endif %}
+                        {% endif %}
                     </div>
                 </div>
-                {% else %}
+            {% else %}
                 <div class="col-md-12 card text-center align-content-center bg-secondary text-white pt-5 pb-5 lead">
                     {{ "page.confidentielle"|trans }}.
                 </div>
@@ -187,27 +195,28 @@
                 "                                        </div>\n" +
                 "                                    </div>";
 
-            let suivi =0;
-            function submit(){
+            let suivi = 0;
+
+            function submit() {
                 $.ajax("{{ path('app.clubAjax.submit',{'id':club.id}) }}",
                     {
-                        success : function (data) {
+                        success: function (data) {
                             data = $.parseJSON(data);
-                            if(data.suivi===2){
-                                suivi=data.suivi;
+                            if (data.suivi === 2) {
+                                suivi = data.suivi;
                                 suivre.html("{{ 'common.actions.unfollow'|trans }}");
                                 suivre.addClass("btn-danger");
                                 suivre.removeClass("btn-primary");
                                 suivre.removeClass("btn-secondary");
                                 $(".contentCard").prepend(text);
-                            }else if(data.suivi===1){
-                                suivi=data.suivi;
+                            } else if (data.suivi === 1) {
+                                suivi = data.suivi;
                                 suivre.html("{{ 'common.actions.asked'|trans }}");
                                 suivre.removeClass("btn-danger");
                                 suivre.removeClass("btn-primary");
                                 suivre.addClass("btn-secondary");
-                            }else{
-                                suivi=0;
+                            } else {
+                                suivi = 0;
                                 suivre.html("{{ 'common.actions.follow'|trans }}");
                                 suivre.removeClass("btn-danger");
                                 suivre.removeClass("btn-secondary");
@@ -216,7 +225,7 @@
                             }
                             nb.html(data.nb);
                         },
-                        error : function (data) {
+                        error: function (data) {
 
                         }
                     });
@@ -224,23 +233,23 @@
 
             $.ajax("{{ path("app.clubAjax.getsubmit",{"id":club.id}) }}",
                 {
-                    success : function (data) {
+                    success: function (data) {
                         data = $.parseJSON(data);
                         if (data.suivi === 2) {
-                            suivi=data.suivi;
+                            suivi = data.suivi;
                             suivre.html("{{ 'common.actions.unfollow'|trans }}");
                             suivre.addClass("btn-danger");
                             suivre.removeClass("btn-primary");
                             suivre.removeClass("btn-secondary");
 
                         } else if (data.suivi === 1) {
-                            suivi=data.suivi;
+                            suivi = data.suivi;
                             suivre.html("{{ 'common.actions.asked'|trans }}");
                             suivre.removeClass("btn-danger");
                             suivre.removeClass("btn-primary");
                             suivre.addClass("btn-secondary");
                         } else {
-                            suivi=0;
+                            suivi = 0;
                             suivre.html("{{ 'common.actions.follow'|trans }}");
                             suivre.removeClass("btn-danger");
                             suivre.removeClass("btn-secondary");
@@ -255,11 +264,10 @@
             const savemodal = $('.save');
 
 
-
-            suivre.on("click",function () {
-                if (suivi!==2){
+            suivre.on("click", function () {
+                if (suivi !== 2) {
                     submit();
-                }else{
+                } else {
                     closemodal.off();
                     savemodal.off();
                     $(".modal-title").html("{{ "action.desabonner"|trans }}");
@@ -268,11 +276,11 @@
                     closemodal.html("{{ "action.cancel"|trans }}");
                     savemodal.html("{{ "action.desabonner"|trans }}");
                     modal.modal("show");
-                    closemodal.on('click',function () {
+                    closemodal.on('click', function () {
                         modal.modal('hide');
                     });
 
-                    savemodal.on("click",function () {
+                    savemodal.on("click", function () {
                         modal.modal('hide');
                         submit();
                     });
@@ -284,16 +292,16 @@
             {% if is_granted('EDIT',club) %}
             const close = $(".close");
 
-            function deleteuser(id){
+            function deleteuser(id) {
                 let url = "{{ path("app.club.ajaxdelete",{'id':club.id,'iduser':'id'}) }}";
-                url=url.replace('id',id);
+                url = url.replace('id', id);
                 $.ajax(url,
                     {
-                        success : function (data) {
+                        success: function (data) {
                             data = $.parseJSON(data);
-                            switch(data.reponse){
+                            switch (data.reponse) {
                                 case "SUCCES":
-                                    var name='[data-delete="'+id+'"]' ;
+                                    var name = '[data-delete="' + id + '"]';
                                     $(name).remove();
                                     $(".membres").html(data.nb);
                                     break;
@@ -306,20 +314,20 @@
                     });
             }
 
-            close.on('click',function (event) {
+            close.on('click', function (event) {
                 closemodal.off();
                 savemodal.off();
                 $(".modal-title").html("{{ "action.delete"|trans }}");
                 $('.modal-body').html("{{ "action.deletetext"|trans }}");
-                var id=$(this).data("user");
+                var id = $(this).data("user");
                 closemodal.html("{{ "action.cancel"|trans }}");
                 savemodal.html("{{ "action.delete"|trans }}");
                 modal.modal("show");
-                closemodal.on('click',function () {
+                closemodal.on('click', function () {
                     modal.modal('hide');
                 });
 
-                savemodal.on("click",function () {
+                savemodal.on("click", function () {
                     deleteuser(id);
                     modal.modal('hide');
                 });
@@ -329,4 +337,81 @@
         });
         {% endif %}
     </script>
+    {% if is_granted("EDIT",club) and (demandes|length)>0 %}
+        <script>
+            var hauteur=$(".demandeitem").height()*3.2;
+            $(".listDemandes").css("max-height",hauteur);
+
+            $(document).ready(function () {
+
+
+                $(".add").on("click", function (event) {
+                    var button = $(this);
+                    var id = button.data("id");
+                    var url = "{{ path("app.club.ajaxconfirm", {"status":2, "id": club.id, "userid":"id"}) }}";
+                    url = url.replace("id", id);
+                    $.ajax(url, {
+                        success: function (data) {
+                            data = $.parseJSON(data);
+                            if(data.nbdemandes===0){
+                                $(".demandesdiv").remove();
+                            }
+                            deflate(id);
+                            var retour = inflate(data.nom, data.prenom, id);
+                            $('.membrescontent').append(retour);
+                            $('.nbmembres').html(data.nb);
+                            $(".nbdemandes").html(data.nbdemandes);
+                        }
+                    });
+                });
+
+                $(".delete").on("click", function (event) {
+                    var button = $(this);
+                    var id = button.data("id");
+                    var url = "{{ path("app.club.ajaxconfirm", {"status":0, "id": club.id, "userid":"id"}) }}";
+                    url = url.replace("id", id);
+                    $.ajax(url, {
+                        success: function (data) {
+                            data = $.parseJSON(data);
+                            if(data.nbdemandes===0){
+                                $(".demandesdiv").remove();
+                            }
+                            button.html(data.message);
+                            deflate(id);
+                            $(".nbdemandes").html(data.nbdemandes);
+                        }
+                    });
+                });
+
+                function deflate(id) {
+                    var selector = "[data-id = " + id + "]";
+                    $(selector).remove();
+
+                }
+
+                const text = "<div class=\"col-md-6 col-lg-4 mt-2 usercard\">\n" +
+                    "                                        <div class=\"card\">\n" +
+                    "                                            <div class=\"card-body\">\n" +
+                    "                                                <h5 class=\"card-title\">prenomUser1234 nomUser1234</h5>\n" +
+                    "                                                <h6 class=\"card-subtitle mb-2 text-muted\">Membre</h6>\n" +
+                    "                                                <a href=\"path\" class=\"card-link\">Voir le profil</a>\n" +
+                    "                                            </div>\n" +
+                    "                                        </div>\n" +
+                    "                                    </div>";
+
+                function inflate(nom, prenom, id) {
+                    var retour = text;
+                    var url = "{{ path("app.user",{"id":'id'}) }}";
+                    url =url.replace('id',id);
+                    retour = retour.replace("prenomUser1234", prenom)
+                        .replace("nomUser1234", nom)
+                        .replace("path",url);
+                    return retour;
+                }
+
+
+            });
+
+        </script>
+    {% endif %}
 {% endblock %}
