@@ -94,3 +94,5 @@ user:
 
 club:
     demandes : "Demandes de connexions"
+    descriptiontitle: "Modifier la description du club"
+    descriptionconsigne: "Cliquez sur la description pour la modifier"

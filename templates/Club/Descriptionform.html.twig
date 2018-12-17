@@ -1,0 +1,10 @@
+{{ form_start(form,{
+    'attr': {
+        'novalidate': 'novalidate',
+        'class': 'form formDesc'
+    }}) }}
+    {{ form_widget(form.description,{
+        "attr": {
+            "style":"min-height : 50vh;"
+        }}) }}
+{{ form_end(form) }}

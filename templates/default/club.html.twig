@@ -84,9 +84,13 @@
                     {% include "Club/acceptMembres.html.twig" %}
                 {% endif %}
                 <div class="row ">
-                    <h2 class="col-12">{{ "page.description"|trans }}</h2>
+                    <h2 class="col-12">{{ "page.description"|trans }}
+                        {% if is_granted("EDIT",club) %}
+                            <small class="text-muted" style="font-size: small;">{{ "club.descriptionconsigne"|trans }}</small>
+                        {% endif %}
+                    </h2>
 
-                    <p class="col-12 ml-2 mr-2 lead text-justify">{{ club.description }}</p>
+                    <p class="col-12 pl-4 pr-4 lead text-justify description">{{ club.description }}</p>
                     <hr class="col-10">
                 </div>
 
@@ -339,8 +343,8 @@
     </script>
     {% if is_granted("EDIT",club) and (demandes|length)>0 %}
         <script>
-            var hauteur=$(".demandeitem").height()*3.2;
-            $(".listDemandes").css("max-height",hauteur);
+            var hauteur = $(".demandeitem").height() * 3.2;
+            $(".listDemandes").css("max-height", hauteur);
 
             $(document).ready(function () {
 
@@ -353,7 +357,7 @@
                     $.ajax(url, {
                         success: function (data) {
                             data = $.parseJSON(data);
-                            if(data.nbdemandes===0){
+                            if (data.nbdemandes === 0) {
                                 $(".demandesdiv").remove();
                             }
                             deflate(id);
@@ -373,7 +377,7 @@
                     $.ajax(url, {
                         success: function (data) {
                             data = $.parseJSON(data);
-                            if(data.nbdemandes===0){
+                            if (data.nbdemandes === 0) {
                                 $(".demandesdiv").remove();
                             }
                             button.html(data.message);
@@ -402,16 +406,84 @@
                 function inflate(nom, prenom, id) {
                     var retour = text;
                     var url = "{{ path("app.user",{"id":'id'}) }}";
-                    url =url.replace('id',id);
+                    url = url.replace('id', id);
                     retour = retour.replace("prenomUser1234", prenom)
                         .replace("nomUser1234", nom)
-                        .replace("path",url);
+                        .replace("path", url);
                     return retour;
                 }
 
 
             });
 
+        </script>
+
+
+    {% endif %}
+    {% if is_granted("EDIT",club) %}
+        <script>
+            $(document).ready(function () {
+                const closemodal = $('.closemodal');
+                const savemodal = $('.save');
+                const body = $('.modal-body');
+                const modal = $(".modal");
+                const title = $(".modal-title");
+                const descr = $(".description");
+                descr.on("click", function () {
+
+                    $.ajax("{{ path("app.clubAjax.descriptionmodif",{"id":club.id}) }}", {
+                        success: function (data) {
+                            succes(data);
+                        }
+                    });
+                });
+
+                function succes(data){
+                    closemodal.off();
+                    savemodal.off();
+                    data = $.parseJSON(data);
+                    if (data.message === "OK") {
+                        savemodal.html("{{ "action.valid"|trans }}");
+                        closemodal.html("{{ "action.cancel"|trans }}")
+                        title.html("{{ "club.descriptiontitle"|trans }}");
+                        body.html(data.view);
+                        modal.modal("show");
+                        savemodal.on("click",function () {
+                            $(".formDesc").on("submit",function (e) {
+                                e.preventDefault();
+                                let form = $(".formDesc");
+                                $.ajax("{{ path("app.clubAjax.descriptionmodif",{"id":club.id}) }}", {
+                                    data: form.serialize(),
+                                    type: "POST",
+                                    success: function (data1) {
+                                        succes(data1);
+                                    }
+                                });
+                            });
+                            $(".formDesc").submit();
+                        });
+                        closemodal.on("click",function () {
+                            deflateModal(data);
+                        });
+
+
+                    } else {
+                        deflateModal(data);
+                    }
+
+                }
+
+                function deflateModal(data) {
+                    modal.modal('hide');
+                    title.html();
+                    body.html();
+                    savemodal.html();
+                    closemodal.html();
+                    descr.html(data.descrip);
+                }
+
+
+            });
         </script>
     {% endif %}
 {% endblock %}

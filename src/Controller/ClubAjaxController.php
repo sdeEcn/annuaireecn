@@ -12,9 +12,11 @@ namespace App\Controller;
 use App\Entity\Club;
 use App\Entity\ClubEleves;
 use App\Entity\Eleve;
+use App\Form\DescriptionType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -115,7 +117,7 @@ class ClubAjaxController extends AbstractController
 
     /**
      *
-     * @Route("/clubAjax/{id}",name="app.club.ajaxAccept")
+     * @Route("/clubAjax/{id}",name="app.club.ajaxAccept",condition="request.isXmlHttpRequest()")
      * @IsGranted("EDIT",subject="club")
      */
     public function getDemandeMembre(Club $club)
@@ -133,7 +135,7 @@ class ClubAjaxController extends AbstractController
     }
 
     /**
-     * @Route("/clubAjax/confirm/{status}/{id}/{userid}",name="app.club.ajaxconfirm")
+     * @Route("/clubAjax/confirm/{status}/{id}/{userid}",name="app.club.ajaxconfirm",condition="request.isXmlHttpRequest()")
      * @IsGranted("EDIT",subject="club")
      */
     public function confirmDemande($status, Club $club, $userid)
@@ -173,6 +175,30 @@ class ClubAjaxController extends AbstractController
 
         return new Response(json_encode(array("message"=>$message,"nom"=>$user->getNom(),
             "prenom"=>$user->getPrenom(),"nb"=>$nb,"nbdemandes"=>$nbdemandes)));
+
+    }
+
+    /**
+     * @Route("/clubAjax/description/{id}",name="app.clubAjax.descriptionmodif",condition="request.isXmlHttpRequest()")
+     * @IsGranted("EDIT",subject="club")
+     */
+    public function modifDescription(Club $club,Request $request){
+        $em= $this->getDoctrine()->getManager();
+        $form= $this->createForm(DescriptionType::class,$club);
+        $message = "OK";
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->flush();
+            $message = "SUBMIT";
+        }
+
+        $view  =$this->renderView("Club/Descriptionform.html.twig",array("form"=>$form->createView()));
+
+        $desc = $club->getDescription();
+
+        return new Response(json_encode(array("view"=>$view,"descrip"=>$desc,"message"=>$message)));
 
     }
 }
